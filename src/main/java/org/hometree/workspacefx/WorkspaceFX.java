@@ -25,26 +25,14 @@ public class WorkspaceFX extends HBox {
     private final Sidebar rightBottom;
     private final Sidebar bottomRight;
     private final List<AWorkspaceFXPlugin> plugins = new ArrayList<>();
-
     private final SplitPane mainTopLeft = new SplitPane();
     private final SplitPane mainTopRight = new SplitPane();
     private final SplitPane mainTop = new SplitPane();
     private final SplitPane mainBottom = new SplitPane();
     private final SplitPane main = new SplitPane();
-
     private double mainDividerBackup = .7d;
-
-    private void backupMainDivider() {
-        if (!main.getDividers().isEmpty()) {
-            mainDividerBackup = main.getDividers().getFirst().getPosition();
-        }
-    }
-
-    private void restoreMainDivider() {
-        if (!main.getDividers().isEmpty()) {
-            main.getDividers().getFirst().setPosition(mainDividerBackup);
-        }
-    }
+    private double mainTopDividerBackupLeft = .3d;
+    private double mainTopDividerBackupRight = .7d;
 
     public WorkspaceFX() {
         leftTop = new Sidebar(Pos.TOP_CENTER, Priority.NEVER, mainTopLeft, Sidebar.SPLITPANE_POSITION.FIRST);
@@ -64,6 +52,7 @@ public class WorkspaceFX extends HBox {
 
         mainTopLeft.setOrientation(Orientation.VERTICAL);
         mainTopLeft.getItems().addListener((InvalidationListener) observable -> {
+            backupMainTopDivider();
             if (mainTopLeft.getItems().isEmpty()) {
                 mainTop.getItems().remove(mainTopLeft);
             } else {
@@ -71,9 +60,11 @@ public class WorkspaceFX extends HBox {
                     mainTop.getItems().addFirst(mainTopLeft);
                 }
             }
+            restoreMainTopDivider();
         });
         mainTopRight.setOrientation(Orientation.VERTICAL);
         mainTopRight.getItems().addListener((InvalidationListener) observable -> {
+            backupMainTopDivider();
             if (mainTopRight.getItems().isEmpty()) {
                 mainTop.getItems().remove(mainTopRight);
             } else {
@@ -81,6 +72,7 @@ public class WorkspaceFX extends HBox {
                     mainTop.getItems().addLast(mainTopRight);
                 }
             }
+            restoreMainTopDivider();
         });
 
         mainTop.setOrientation(Orientation.HORIZONTAL);
@@ -105,6 +97,48 @@ public class WorkspaceFX extends HBox {
         VBox sidebarRight = new VBox();
         sidebarRight.getChildren().addAll(rightTop, new Separator(), rightBottom, bottomRight);
         getChildren().addAll(sidebarLeft, main, sidebarRight);
+    }
+
+    private void backupMainTopDivider() {
+        if (mainTop.getDividers().size() == 2) {
+            mainTopDividerBackupLeft = mainTop.getDividers().getFirst().getPosition();
+            mainTopDividerBackupRight = mainTop.getDividers().getLast().getPosition();
+        }
+        if (mainTop.getDividers().size() == 1 && mainTop.getItems().contains(mainTopLeft)) {
+            mainTopDividerBackupLeft = mainTop.getDividers().getFirst().getPosition();
+        }
+        if (mainTop.getDividers().size() == 1 && mainTop.getItems().contains(mainTopRight)) {
+            mainTopDividerBackupRight = mainTop.getDividers().getFirst().getPosition();
+        }
+    }
+
+    private void restoreMainTopDivider() {
+        if (mainTop.getDividers().size() == 2) {
+            mainTop.getDividers().getFirst().setPosition(mainTopDividerBackupLeft);
+            mainTop.getDividers().getLast().setPosition(mainTopDividerBackupRight);
+        }
+        if (mainTop.getDividers().size() == 1 && mainTop.getItems().contains(mainTopLeft)) {
+            mainTop.getDividers().getFirst().setPosition(mainTopDividerBackupLeft);
+        }
+        if (mainTop.getDividers().size() == 1 && mainTop.getItems().contains(mainTopRight)) {
+            mainTop.getDividers().getFirst().setPosition(mainTopDividerBackupRight);
+        }
+    }
+
+    public List<AWorkspaceFXPlugin> getPlugins() {
+        return plugins;
+    }
+
+    private void backupMainDivider() {
+        if (!main.getDividers().isEmpty()) {
+            mainDividerBackup = main.getDividers().getFirst().getPosition();
+        }
+    }
+
+    private void restoreMainDivider() {
+        if (!main.getDividers().isEmpty()) {
+            main.getDividers().getFirst().setPosition(mainDividerBackup);
+        }
     }
 
     public void addPlugin(AWorkspaceFXPlugin plugin, WORKSPACE_POSITION pos) {
