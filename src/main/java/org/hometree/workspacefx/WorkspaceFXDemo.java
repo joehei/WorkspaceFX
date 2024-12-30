@@ -2,26 +2,18 @@ package org.hometree.workspacefx;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 import org.hometree.workspacefx.plugin.LabelPlugin;
-import org.kordamp.ikonli.Ikon;
-import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignB;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignW;
 
-import java.io.IOException;
-
 public class WorkspaceFXDemo extends Application {
 
-    private FontIcon getIcon(Ikon literal, int size) {
-        FontIcon icon = new FontIcon(literal);
-        icon.setIconSize(size);
-        return icon;
-    }
-
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage) {
         WorkspaceFX ws = new WorkspaceFX();
 
         ws.addPlugin(new LabelPlugin(MaterialDesignF.FILE_TREE, "left top 1"), WorkspaceFX.WORKSPACE_POSITION.LEFT_TOP);
@@ -42,6 +34,18 @@ public class WorkspaceFXDemo extends Application {
 
         ws.addPlugin(new LabelPlugin(MaterialDesignW.WEATHER_SUNNY, "bottom right 1"), WorkspaceFX.WORKSPACE_POSITION.BOTTOM_RIGHT);
         ws.addPlugin(new LabelPlugin(MaterialDesignW.WEATHER_SUNNY, "bottom right 2"), WorkspaceFX.WORKSPACE_POSITION.BOTTOM_RIGHT);
+
+        Label mainContent = new Label("Double click me for hide and restore");
+        mainContent.setOnMouseClicked(event -> {
+            if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
+                if (ws.isHiding()) {
+                    ws.restore();
+                } else {
+                    ws.hide();
+                }
+            }
+        });
+        ws.setContent(mainContent);
 
         Scene scene = new Scene(ws, 800, 600);
         stage.setScene(scene);

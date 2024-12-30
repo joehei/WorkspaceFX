@@ -3,7 +3,7 @@ package org.hometree.workspacefx;
 import javafx.beans.InvalidationListener;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.control.Label;
+import javafx.scene.Node;
 import javafx.scene.control.Separator;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.ToggleButton;
@@ -31,12 +31,14 @@ public class WorkspaceFX extends HBox {
     private final SplitPane mainTop = new SplitPane();
     private final SplitPane mainBottom = new SplitPane();
     private final SplitPane main = new SplitPane();
+    private final StackPane mainContentPane;
     private double mainDividerBackup = .7d;
     private double mainTopDividerBackupLeft = .3d;
     private double mainTopDividerBackupRight = .7d;
     private ToggleButton dragAndDropButton;
     private Sidebar dragAndDropSidebar;
     private AWorkspaceFXPlugin dragAndDropPlugin;
+    private Node content;
 
     public WorkspaceFX() {
         leftTop = new Sidebar(this, Pos.TOP_CENTER, Priority.NEVER, mainTopLeft, Sidebar.SPLITPANE_POSITION.FIRST);
@@ -52,7 +54,7 @@ public class WorkspaceFX extends HBox {
 
         sidebarLeft.getChildren().addAll(leftTop, new Separator(), leftBottom, bottomLeft);
 
-        StackPane mainContent = new StackPane(new Label("mainContent"));
+        mainContentPane = new StackPane();
 
         mainTopLeft.setOrientation(Orientation.VERTICAL);
         mainTopLeft.getItems().addListener((InvalidationListener) observable -> {
@@ -83,7 +85,7 @@ public class WorkspaceFX extends HBox {
         SplitPane.setResizableWithParent(mainTopRight,false);
 
         mainTop.setOrientation(Orientation.HORIZONTAL);
-        mainTop.getItems().addAll(mainContent);
+        mainTop.getItems().addAll(mainContentPane);
         mainBottom.setOrientation(Orientation.HORIZONTAL);
         mainBottom.getItems().addListener((InvalidationListener) observable -> {
             if (mainBottom.getItems().isEmpty()) {
@@ -105,6 +107,45 @@ public class WorkspaceFX extends HBox {
         VBox sidebarRight = new VBox();
         sidebarRight.getChildren().addAll(rightTop, new Separator(), rightBottom, bottomRight);
         getChildren().addAll(sidebarLeft, main, sidebarRight);
+    }
+
+    public Node getContent() {
+        return content;
+    }
+
+    public boolean isHiding() {
+        return isHiding;
+    }
+
+    public void setHiding(boolean hiding) {
+        isHiding = hiding;
+    }
+
+    private boolean isHiding=false;
+
+    public void setContent(Node content) {
+        this.content = content;
+        mainContentPane.getChildren().setAll(content);
+    }
+
+    public void hide(){
+        leftTop.hide();
+        leftBottom.hide();
+        rightTop.hide();
+        rightBottom.hide();
+        bottomLeft.hide();
+        bottomRight.hide();
+        isHiding=true;
+    }
+
+    public void restore(){
+        leftTop.restore();
+        leftBottom.restore();
+        rightTop.restore();
+        rightBottom.restore();
+        bottomLeft.restore();
+        bottomRight.restore();
+        isHiding=false;
     }
 
     public AWorkspaceFXPlugin getDragAndDropPlugin() {

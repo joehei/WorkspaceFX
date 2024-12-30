@@ -68,6 +68,21 @@ public class Sidebar extends VBox {
         });
     }
 
+    private ToggleButton hideRestoreBackup;
+
+    public void hide() {
+        hideRestoreBackup = (ToggleButton) toggleGroup.getSelectedToggle();
+        if (hideRestoreBackup != null) {
+            hideRestoreBackup.setSelected(false);
+        }
+    }
+
+    public void restore() {
+        if (hideRestoreBackup != null) {
+            hideRestoreBackup.setSelected(true);
+        }
+    }
+
     public SPLITPANE_POSITION getContentSplitPanePosition() {
         return contentSplitPanePosition;
     }
