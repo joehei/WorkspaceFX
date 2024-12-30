@@ -66,6 +66,8 @@ public class WorkspaceFX extends HBox {
             }
             restoreMainTopDivider();
         });
+        SplitPane.setResizableWithParent(mainTopLeft,false);
+
         mainTopRight.setOrientation(Orientation.VERTICAL);
         mainTopRight.getItems().addListener((InvalidationListener) observable -> {
             backupMainTopDivider();
@@ -78,6 +80,7 @@ public class WorkspaceFX extends HBox {
             }
             restoreMainTopDivider();
         });
+        SplitPane.setResizableWithParent(mainTopRight,false);
 
         mainTop.setOrientation(Orientation.HORIZONTAL);
         mainTop.getItems().addAll(mainContent);
@@ -93,6 +96,7 @@ public class WorkspaceFX extends HBox {
                 restoreMainDivider();
             }
         });
+        SplitPane.setResizableWithParent(mainBottom,false);
 
         main.setOrientation(Orientation.VERTICAL);
         main.getItems().addAll(mainTop);
