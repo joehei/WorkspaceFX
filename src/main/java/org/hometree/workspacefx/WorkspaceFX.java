@@ -6,6 +6,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
@@ -33,16 +34,19 @@ public class WorkspaceFX extends HBox {
     private double mainDividerBackup = .7d;
     private double mainTopDividerBackupLeft = .3d;
     private double mainTopDividerBackupRight = .7d;
+    private ToggleButton dragAndDropButton;
+    private Sidebar dragAndDropSidebar;
+    private AWorkspaceFXPlugin dragAndDropPlugin;
 
     public WorkspaceFX() {
-        leftTop = new Sidebar(Pos.TOP_CENTER, Priority.NEVER, mainTopLeft, Sidebar.SPLITPANE_POSITION.FIRST);
-        leftBottom = new Sidebar(Pos.TOP_CENTER, Priority.ALWAYS, mainTopLeft, Sidebar.SPLITPANE_POSITION.LAST);
+        leftTop = new Sidebar(this, Pos.TOP_CENTER, Priority.NEVER, mainTopLeft, Sidebar.SPLITPANE_POSITION.FIRST);
+        leftBottom = new Sidebar(this, Pos.TOP_CENTER, Priority.ALWAYS, mainTopLeft, Sidebar.SPLITPANE_POSITION.LAST);
 
-        rightTop = new Sidebar(Pos.TOP_CENTER, Priority.NEVER, mainTopRight, Sidebar.SPLITPANE_POSITION.FIRST);
-        rightBottom = new Sidebar(Pos.TOP_CENTER, Priority.ALWAYS, mainTopRight, Sidebar.SPLITPANE_POSITION.LAST);
+        rightTop = new Sidebar(this, Pos.TOP_CENTER, Priority.NEVER, mainTopRight, Sidebar.SPLITPANE_POSITION.FIRST);
+        rightBottom = new Sidebar(this, Pos.TOP_CENTER, Priority.ALWAYS, mainTopRight, Sidebar.SPLITPANE_POSITION.LAST);
 
-        bottomLeft = new Sidebar(Pos.BOTTOM_CENTER, Priority.ALWAYS, mainBottom, Sidebar.SPLITPANE_POSITION.FIRST);
-        bottomRight = new Sidebar(Pos.BOTTOM_CENTER, Priority.ALWAYS, mainBottom, Sidebar.SPLITPANE_POSITION.LAST);
+        bottomLeft = new Sidebar(this, Pos.BOTTOM_CENTER, Priority.ALWAYS, mainBottom, Sidebar.SPLITPANE_POSITION.FIRST);
+        bottomRight = new Sidebar(this, Pos.BOTTOM_CENTER, Priority.ALWAYS, mainBottom, Sidebar.SPLITPANE_POSITION.LAST);
 
         VBox sidebarLeft = new VBox();
 
@@ -97,6 +101,30 @@ public class WorkspaceFX extends HBox {
         VBox sidebarRight = new VBox();
         sidebarRight.getChildren().addAll(rightTop, new Separator(), rightBottom, bottomRight);
         getChildren().addAll(sidebarLeft, main, sidebarRight);
+    }
+
+    public AWorkspaceFXPlugin getDragAndDropPlugin() {
+        return dragAndDropPlugin;
+    }
+
+    public void setDragAndDropPlugin(AWorkspaceFXPlugin dragAndDropPlugin) {
+        this.dragAndDropPlugin = dragAndDropPlugin;
+    }
+
+    public Sidebar getDragAndDropSidebar() {
+        return dragAndDropSidebar;
+    }
+
+    public void setDragAndDropSidebar(Sidebar dragAndDropSidebar) {
+        this.dragAndDropSidebar = dragAndDropSidebar;
+    }
+
+    public ToggleButton getDragAndDropButton() {
+        return dragAndDropButton;
+    }
+
+    public void setDragAndDropButton(ToggleButton dragAndDropButton) {
+        this.dragAndDropButton = dragAndDropButton;
     }
 
     private void backupMainTopDivider() {
