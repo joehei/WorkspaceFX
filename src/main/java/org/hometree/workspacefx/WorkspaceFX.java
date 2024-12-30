@@ -32,6 +32,20 @@ public class WorkspaceFX extends HBox {
     private final SplitPane mainBottom = new SplitPane();
     private final SplitPane main = new SplitPane();
 
+    private double mainDividerBackup = .7d;
+
+    private void backupMainDivider() {
+        if (!main.getDividers().isEmpty()) {
+            mainDividerBackup = main.getDividers().getFirst().getPosition();
+        }
+    }
+
+    private void restoreMainDivider() {
+        if (!main.getDividers().isEmpty()) {
+            main.getDividers().getFirst().setPosition(mainDividerBackup);
+        }
+    }
+
     public WorkspaceFX() {
         leftTop = new Sidebar(Pos.TOP_CENTER, Priority.NEVER, mainTopLeft, Sidebar.SPLITPANE_POSITION.FIRST);
         leftBottom = new Sidebar(Pos.TOP_CENTER, Priority.ALWAYS, mainTopLeft, Sidebar.SPLITPANE_POSITION.LAST);
@@ -74,11 +88,13 @@ public class WorkspaceFX extends HBox {
         mainBottom.setOrientation(Orientation.HORIZONTAL);
         mainBottom.getItems().addListener((InvalidationListener) observable -> {
             if (mainBottom.getItems().isEmpty()) {
+                backupMainDivider();
                 main.getItems().remove(mainBottom);
             } else {
                 if (!main.getItems().contains(mainBottom)) {
                     main.getItems().add(mainBottom);
                 }
+                restoreMainDivider();
             }
         });
 

@@ -5,7 +5,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
-import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
@@ -14,8 +13,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.hometree.workspacefx.plugin.AWorkspaceFXPlugin;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class Sidebar extends VBox {
 
@@ -36,19 +35,20 @@ public class Sidebar extends VBox {
         setVgrow(this, priority);
         setAlignment(alignment);
         toggleGroup.selectedToggleProperty().addListener((obs, ov, nv) -> {
+
             // Replace the current content
             if (nv != null && ov != null) {
                 backupDivider();
-                contentSplitPane.getItems().set(contentSplitPane.getItems().indexOf(buttonContentMap.get(ov).getContent()), buttonContentMap.get(nv).getContent());
+                contentSplitPane.getItems().set(contentSplitPane.getItems().indexOf(buttonContentMap.get((ToggleButton) ov).getContent()), buttonContentMap.get((ToggleButton) nv).getContent());
                 restoreDivider();
             }
 
             // Nothing was selected add the selected content
             if (nv != null && ov == null) {
                 if (contentSplitPanePosition.equals(SPLITPANE_POSITION.FIRST)) {
-                    contentSplitPane.getItems().addFirst(buttonContentMap.get(nv).getContent());
+                    contentSplitPane.getItems().addFirst(buttonContentMap.get((ToggleButton) nv).getContent());
                 } else {
-                    contentSplitPane.getItems().add(buttonContentMap.get(nv).getContent());
+                    contentSplitPane.getItems().add(buttonContentMap.get((ToggleButton) nv).getContent());
                 }
                 restoreDivider();
             }
@@ -56,7 +56,7 @@ public class Sidebar extends VBox {
             // Nothing is selected remove all the content
             if (nv == null && ov != null) {
                 backupDivider();
-                contentSplitPane.getItems().remove(buttonContentMap.get(ov).getContent());
+                contentSplitPane.getItems().remove(buttonContentMap.get((ToggleButton) ov).getContent());
             }
         });
     }
@@ -127,7 +127,7 @@ public class Sidebar extends VBox {
 //        button.addEventFilter(MouseEvent.MOUSE_EXITED, getEventHandlerMouseExited());
         button.setMinWidth(28);
         button.setMinHeight(28);
-        String css = this.getClass().getResource("Sidebar.css").toExternalForm();
+        String css = Objects.requireNonNull(this.getClass().getResource("Sidebar.css")).toExternalForm();
         button.getStylesheets().add(css);
         button.setGraphic(node);
         toggleGroup.getToggles().add(button);
