@@ -1,5 +1,7 @@
 package org.hometree.workspacefx.sidebar;
 
+import javafx.event.EventHandler;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -7,16 +9,15 @@ import javafx.scene.SnapshotParameters;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
+import javafx.scene.input.*;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.hometree.workspacefx.WorkspaceFX;
 import org.hometree.workspacefx.plugin.AWorkspaceFXPlugin;
 
+import java.security.DrbgParameters;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -27,20 +28,21 @@ public class Sidebar extends VBox {
     private final SplitPane contentSplitPane;
     private final SPLITPANE_POSITION contentSplitPanePosition;
     private final WorkspaceFX workspaceFX;
-    private StackPane spacer;
-    private int index;
+    private final String spacerStyle = "-fx-background-color:black;-fx-opacity:.1;-fx-background-radius:5";
+    private final String spacerNotStyled = "";// "-fx-background-color:black;";
     private double dividerPos = .5d;
     private int indexToInsertDragAndDropButton;
+    private ToggleButton hideRestoreBackup;
 
     public Sidebar(WorkspaceFX workspaceFX, Pos alignment, Priority priority, SplitPane contentSplitPane, SPLITPANE_POSITION contentSplitPanePosition) {
         this.workspaceFX = workspaceFX;
         this.contentSplitPane = contentSplitPane;
         this.contentSplitPanePosition = contentSplitPanePosition;
         toggleGroup = new ToggleGroup();
-        setSpacing(3);
         setPadding(new Insets(3));
         setVgrow(this, priority);
         setAlignment(alignment);
+        getChildren().add(getSpacer());
         toggleGroup.selectedToggleProperty().addListener((obs, ov, nv) -> {
 
             // Replace the current content
@@ -67,8 +69,6 @@ public class Sidebar extends VBox {
             }
         });
     }
-
-    private ToggleButton hideRestoreBackup;
 
     public void hide() {
         hideRestoreBackup = (ToggleButton) toggleGroup.getSelectedToggle();
@@ -103,15 +103,29 @@ public class Sidebar extends VBox {
         ToggleButton toggleButton = getButton(plugin.getToggleButtonContent());
         buttonContentMap.put(toggleButton, plugin);
         getChildren().add(toggleButton);
+        getChildren().add(getSpacer());
     }
 
-    public void addButton(AWorkspaceFXPlugin plugin, int index) {
+    public void addButton(AWorkspaceFXPlugin plugin, int index, boolean buttonSelected) {
         ToggleButton toggleButton = getButton(plugin.getToggleButtonContent());
         buttonContentMap.put(toggleButton, plugin);
-        getChildren().add(index, toggleButton);
+        if (getChildren().size() - 1 < index) {
+            getChildren().add(toggleButton);
+            getChildren().add(getSpacer());
+        } else {
+            System.out.println(getChildren().get(index).getClass().getSimpleName());
+            getChildren().add(index, getSpacer());
+            getChildren().add(index, toggleButton);
+        }
+        toggleButton.setSelected(buttonSelected);
     }
 
     public void removeButton(ToggleButton button) {
+        button.setSelected(false);
+        int index = getChildren().indexOf(button);
+        if (getChildren().get(index + 1) instanceof StackPane sp) {
+            getChildren().remove(sp);
+        }
         getChildren().remove(button);
         buttonContentMap.remove(button);
     }
@@ -129,71 +143,72 @@ public class Sidebar extends VBox {
         return button;
     }
 
-    private void setSpacer() {
-        spacer = new StackPane();
-        spacer.setStyle("-fx-background-color:black;-fx-opacity:.1;-fx-background-radius:5");
+    private StackPane getSpacer() {
+        StackPane spacer = new StackPane();
+        spacer.setStyle(spacerNotStyled);
         spacer.setMinHeight(3);
+        return spacer;
     }
 
     private void insertDraggedButton(DragEvent event) {
         event.setDropCompleted(workspaceFX.getDragAndDropButton() != null && workspaceFX.getDragAndDropPlugin() != null);
+        boolean buttonActive = workspaceFX.getDragAndDropButton().isSelected();
         workspaceFX.getDragAndDropSidebar().removeButton(workspaceFX.getDragAndDropButton());
-        addButton(workspaceFX.getDragAndDropPlugin(), indexToInsertDragAndDropButton);
+        addButton(workspaceFX.getDragAndDropPlugin(), indexToInsertDragAndDropButton, buttonActive);
         event.consume();
+    }
+
+    private void removeStyleFromAllSpacer() {
+        for (Node n : getChildren()) {
+            if (n instanceof StackPane sp) {
+                sp.setStyle(spacerNotStyled);
+            }
+        }
     }
 
     private void setupDragAndDropTarget(ToggleButton button) {
         // Target sidebar (vbox)
         setOnDragOver(event -> {
+            removeStyleFromAllSpacer();
             if (event.getGestureSource() != button && event.getDragboard().hasString() && event.getDragboard().getString().startsWith("WorkspaceFX_")) {
                 event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-                if (spacer == null) {
-                    setSpacer();
+                if (getChildren().getLast() instanceof StackPane spacer) {
+                    spacer.setStyle(spacerStyle);
+                    indexToInsertDragAndDropButton = getChildren().indexOf(spacer) + 1;
+                } else {
+                    System.out.println("Warning last element is not a spacer.");
                 }
-                if (!getChildren().contains(spacer)) {
-                    getChildren().add(spacer);
-                }
-                indexToInsertDragAndDropButton = getChildren().indexOf(spacer);
             }
         });
-        setOnDragExited(event -> {
-            getChildren().remove(spacer);
-            spacer = null;
-        });
+        setOnDragExited(event -> removeStyleFromAllSpacer());
         setOnDragDropped(this::insertDraggedButton);
 
         // Target button
         button.setOnDragOver(event -> {
+            removeStyleFromAllSpacer();
             // Give a visual feedback where to drop the button
             if (event.getGestureSource() != button && event.getDragboard().hasString()) {
                 event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
 
-                if (spacer == null) {
-                    setSpacer();
-                    index = getChildren().indexOf(button);
-                }
+                int index = getChildren().indexOf(button);
 
                 if (event.getY() <= button.getHeight() / 2) {
                     indexToInsertDragAndDropButton = index;
+                    StackPane spacer = (StackPane) getChildren().get(index - 1);
+                    spacer.setStyle(spacerStyle);
+                    spacer = (StackPane) getChildren().get(index + 1);
+                    spacer.setStyle(spacerNotStyled);
                 } else {
-                    indexToInsertDragAndDropButton = index + 1;
-                }
-                int currentIndex = getChildren().indexOf(spacer);
-                if (currentIndex != indexToInsertDragAndDropButton || currentIndex == -1) {
-                    getChildren().remove(spacer);
-                    if (indexToInsertDragAndDropButton == -1) {
-                        getChildren().addFirst(spacer);
-                    } else {
-                        getChildren().add(indexToInsertDragAndDropButton, spacer);
-                    }
+                    indexToInsertDragAndDropButton = index + 2;
+                    StackPane spacer = (StackPane) getChildren().get(index - 1);
+                    spacer.setStyle(spacerNotStyled);
+                    spacer = (StackPane) getChildren().get(index + 1);
+                    spacer.setStyle(spacerStyle);
                 }
             }
             event.consume();
         });
-        button.setOnDragExited(event -> {
-            getChildren().remove(spacer);
-            spacer = null;
-        });
+        button.setOnDragExited(event -> removeStyleFromAllSpacer());
         button.setOnDragDropped(this::insertDraggedButton);
     }
 
