@@ -8,6 +8,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.time.ZonedDateTime;
@@ -16,15 +18,13 @@ import java.util.ResourceBundle;
 
 public class WSPDigitalClock extends AWorkspaceFXPlugin implements Initializable {
 
+    private static final Logger log = LoggerFactory.getLogger(WSPDigitalClock.class);
+    private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("eeee dd.MM.yyyy");
     @FXML
     private Label date;
-
     @FXML
     private Label time;
-
-    private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-
-    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("eeee dd.MM.yyyy");
 
     public WSPDigitalClock() {
         try {
@@ -36,7 +36,7 @@ public class WSPDigitalClock extends AWorkspaceFXPlugin implements Initializable
             icon.setIconSize(16);
             setToggleButtonContent(icon);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
 

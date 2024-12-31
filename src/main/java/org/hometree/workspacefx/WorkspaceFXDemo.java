@@ -1,10 +1,12 @@
 package org.hometree.workspacefx;
 
+import atlantafx.base.theme.NordLight;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.hometree.workspacefx.plugin.WSPDigitalClock;
 import org.hometree.workspacefx.plugin.WSPLabel;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignB;
@@ -16,6 +18,7 @@ public class WorkspaceFXDemo extends Application {
     @Override
     public void start(Stage stage) {
 
+        Application.setUserAgentStylesheet(new NordLight().getUserAgentStylesheet());
 
         WorkspaceFX ws = new WorkspaceFX();
 
@@ -57,6 +60,7 @@ public class WorkspaceFXDemo extends Application {
     }
 
     public static void main(String[] args) {
+        Configurator.initialize(null, "log4j2-demo.xml");
         launch();
     }
 }
