@@ -41,14 +41,14 @@ public class WorkspaceFX extends HBox {
     private Node content;
 
     public WorkspaceFX() {
-        leftTop = new Sidebar(this, Pos.TOP_CENTER, Priority.NEVER, mainTopLeft, Sidebar.SPLITPANE_POSITION.FIRST);
-        leftBottom = new Sidebar(this, Pos.TOP_CENTER, Priority.ALWAYS, mainTopLeft, Sidebar.SPLITPANE_POSITION.LAST);
+        leftTop = new Sidebar(this, Pos.TOP_CENTER, Priority.NEVER, mainTopLeft, Sidebar.SPLITPANE_POSITION.FIRST, Sidebar.SIDEBAR_POSITION.LEFT);
+        leftBottom = new Sidebar(this, Pos.TOP_CENTER, Priority.ALWAYS, mainTopLeft, Sidebar.SPLITPANE_POSITION.LAST, Sidebar.SIDEBAR_POSITION.LEFT);
 
-        rightTop = new Sidebar(this, Pos.TOP_CENTER, Priority.NEVER, mainTopRight, Sidebar.SPLITPANE_POSITION.FIRST);
-        rightBottom = new Sidebar(this, Pos.TOP_CENTER, Priority.ALWAYS, mainTopRight, Sidebar.SPLITPANE_POSITION.LAST);
+        rightTop = new Sidebar(this, Pos.TOP_CENTER, Priority.NEVER, mainTopRight, Sidebar.SPLITPANE_POSITION.FIRST, Sidebar.SIDEBAR_POSITION.RIGHT);
+        rightBottom = new Sidebar(this, Pos.TOP_CENTER, Priority.ALWAYS, mainTopRight, Sidebar.SPLITPANE_POSITION.LAST, Sidebar.SIDEBAR_POSITION.RIGHT);
 
-        bottomLeft = new Sidebar(this, Pos.BOTTOM_CENTER, Priority.ALWAYS, mainBottom, Sidebar.SPLITPANE_POSITION.FIRST);
-        bottomRight = new Sidebar(this, Pos.BOTTOM_CENTER, Priority.ALWAYS, mainBottom, Sidebar.SPLITPANE_POSITION.LAST);
+        bottomLeft = new Sidebar(this, Pos.BOTTOM_CENTER, Priority.ALWAYS, mainBottom, Sidebar.SPLITPANE_POSITION.FIRST, Sidebar.SIDEBAR_POSITION.LEFT);
+        bottomRight = new Sidebar(this, Pos.BOTTOM_CENTER, Priority.ALWAYS, mainBottom, Sidebar.SPLITPANE_POSITION.LAST, Sidebar.SIDEBAR_POSITION.RIGHT);
 
         VBox sidebarLeft = new VBox();
 

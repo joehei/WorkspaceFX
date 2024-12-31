@@ -5,7 +5,10 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
+import javafx.scene.SubScene;
+import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
@@ -13,6 +16,8 @@ import javafx.scene.input.*;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import org.controlsfx.control.PopOver;
 import org.hometree.workspacefx.WorkspaceFX;
 import org.hometree.workspacefx.plugin.AWorkspaceFXPlugin;
 
@@ -22,6 +27,8 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class Sidebar extends VBox {
+
+    public enum SIDEBAR_POSITION {LEFT, RIGHT}
 
     private final ToggleGroup toggleGroup;
     private final HashMap<ToggleButton, AWorkspaceFXPlugin> buttonContentMap = new HashMap<>();
@@ -33,8 +40,10 @@ public class Sidebar extends VBox {
     private double dividerPos = .5d;
     private int indexToInsertDragAndDropButton;
     private ToggleButton hideRestoreBackup;
+    private SIDEBAR_POSITION sidebarPos;
 
-    public Sidebar(WorkspaceFX workspaceFX, Pos alignment, Priority priority, SplitPane contentSplitPane, SPLITPANE_POSITION contentSplitPanePosition) {
+    public Sidebar(WorkspaceFX workspaceFX, Pos alignment, Priority priority, SplitPane contentSplitPane, SPLITPANE_POSITION contentSplitPanePosition, SIDEBAR_POSITION sidebarPos) {
+        this.sidebarPos = sidebarPos;
         this.workspaceFX = workspaceFX;
         this.contentSplitPane = contentSplitPane;
         this.contentSplitPanePosition = contentSplitPanePosition;
@@ -100,20 +109,19 @@ public class Sidebar extends VBox {
     }
 
     public void addButton(AWorkspaceFXPlugin plugin) {
-        ToggleButton toggleButton = getButton(plugin.getToggleButtonContent());
+        ToggleButton toggleButton = getButton(plugin);
         buttonContentMap.put(toggleButton, plugin);
         getChildren().add(toggleButton);
         getChildren().add(getSpacer());
     }
 
     public void addButton(AWorkspaceFXPlugin plugin, int index, boolean buttonSelected) {
-        ToggleButton toggleButton = getButton(plugin.getToggleButtonContent());
+        ToggleButton toggleButton = getButton(plugin);
         buttonContentMap.put(toggleButton, plugin);
         if (getChildren().size() - 1 < index) {
             getChildren().add(toggleButton);
             getChildren().add(getSpacer());
         } else {
-            System.out.println(getChildren().get(index).getClass().getSimpleName());
             getChildren().add(index, getSpacer());
             getChildren().add(index, toggleButton);
         }
@@ -130,15 +138,33 @@ public class Sidebar extends VBox {
         buttonContentMap.remove(button);
     }
 
-    private ToggleButton getButton(Node node) {
+    private ToggleButton getButton(AWorkspaceFXPlugin plugin) {
         ToggleButton button = new ToggleButton();
+
+        PopOver popOver = new PopOver();
+        popOver.setArrowSize(10);
+        double offset;
+
+        if (sidebarPos.equals(SIDEBAR_POSITION.RIGHT)) {
+            popOver.setArrowLocation(PopOver.ArrowLocation.RIGHT_CENTER);
+            offset = -10;
+        } else {
+            offset = -5;
+        }
+
+        Label label = new Label(plugin.getShortDescription());
+        label.setFont(Font.font(12));
+        StackPane content = new StackPane(label);
+        content.setPadding(new Insets(5));
+        popOver.setContentNode(content);
+        popOver.setArrowSize(0);
+        button.setOnMouseEntered(event -> popOver.show(button, offset));
+        button.setOnMouseExited(event -> popOver.hide());
         setupDragAndDropSource(button);
         setupDragAndDropTarget(button);
         button.setMinWidth(28);
         button.setMinHeight(28);
-        String css = Objects.requireNonNull(this.getClass().getResource("Sidebar.css")).toExternalForm();
-        button.getStylesheets().add(css);
-        button.setGraphic(node);
+        button.setGraphic(plugin.getToggleButtonContent());
         toggleGroup.getToggles().add(button);
         return button;
     }

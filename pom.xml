@@ -11,13 +11,21 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <junit.version>5.10.0</junit.version>
+        <junit.version>5.10.3</junit.version>
         <ikonli.version>12.3.1</ikonli.version>
         <openjfx.version>23.0.1</openjfx.version>
-
+        <atlantafx.version>2.0.1</atlantafx.version>
+        <controlsfx.version>11.2.1</controlsfx.version>
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.controlsfx</groupId>
+            <artifactId>controlsfx</artifactId>
+            <version>${controlsfx.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
@@ -85,4 +93,11 @@
             </plugin>
         </plugins>
     </build>
+    <repositories>
+        <repository>
+            <id>maven_central</id>
+            <name>Maven Central</name>
+            <url>https://repo.maven.apache.org/maven2/</url>
+        </repository>
+    </repositories>
 </project>

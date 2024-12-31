@@ -6,6 +6,7 @@ public abstract class AWorkspaceFXPlugin {
 
     private Node toggleButtonContent;
     private Node content;
+    private String shortDescription="";
 
     public AWorkspaceFXPlugin() {
     }
@@ -15,11 +16,19 @@ public abstract class AWorkspaceFXPlugin {
         this.content = content;
     }
 
+    public String getShortDescription() {
+        return shortDescription;
+    }
+
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
+    }
+
     public Node getToggleButtonContent() {
         return toggleButtonContent;
     }
 
-    public void setToggleButton(Node toggleButtonContent) {
+    public void setToggleButtonContent(Node toggleButtonContent) {
         this.toggleButtonContent = toggleButtonContent;
     }
 
