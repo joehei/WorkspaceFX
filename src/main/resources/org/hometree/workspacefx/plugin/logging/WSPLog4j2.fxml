@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.dlsc.gemsfx.SearchTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<VBox xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox spacing="5.0">
+         <children>
+            <SearchTextField />
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </HBox>
+      <TableView tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
+        <columns>
+          <TableColumn maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" />
+          <TableColumn prefWidth="75.0" text="Timestamp" />
+            <TableColumn prefWidth="75.0" text="Message" />
+            <TableColumn editable="false" prefWidth="75.0" text="Exception" visible="false" />
+        </columns>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
+      </TableView>
+      <HBox alignment="CENTER_RIGHT" spacing="5.0">
+         <children>
+            <CheckBox mnemonicParsing="false" selected="true" />
+            <Label alignment="CENTER_RIGHT" prefWidth="75.0" style="-fx-background-color: green; -fx-background-radius: 5;" text="1.000.000" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+               <padding>
+                  <Insets right="5.0" />
+               </padding>
+            </Label>
+            <CheckBox mnemonicParsing="false" selected="true" />
+            <Label alignment="CENTER_RIGHT" prefWidth="75.0" style="-fx-background-color: yellow; -fx-background-radius: 5;" text="1.000.000">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+               <padding>
+                  <Insets right="5.0" />
+               </padding>
+            </Label>
+            <CheckBox mnemonicParsing="false" selected="true" />
+            <Label alignment="CENTER_RIGHT" prefWidth="75.0" style="-fx-background-color: red; -fx-background-radius: 5;" text="1.000.000" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+               <padding>
+                  <Insets right="5.0" />
+               </padding>
+            </Label>
+            <CheckBox mnemonicParsing="false" selected="true" />
+            <Label alignment="CENTER_RIGHT" prefWidth="75.0" style="-fx-background-color: lightgray; -fx-background-radius: 5;" text="1.000.000">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+               <padding>
+                  <Insets right="5.0" />
+               </padding>
+            </Label>
+         </children>
+         <padding>
+            <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+         </padding>
+      </HBox>
+   </children>
+</VBox>

@@ -1,4 +1,4 @@
-package org.hometree.workspacefx.plugin.general;
+package org.hometree.workspacefx.plugin.clock;
 
 import javafx.application.Platform;
 import javafx.concurrent.Task;
