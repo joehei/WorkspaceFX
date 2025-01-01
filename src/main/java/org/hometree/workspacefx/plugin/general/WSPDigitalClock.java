@@ -1,4 +1,4 @@
-package org.hometree.workspacefx.plugin;
+package org.hometree.workspacefx.plugin.general;
 
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import org.hometree.workspacefx.plugin.AWorkspaceFXPlugin;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
 import org.slf4j.Logger;

@@ -16,6 +16,7 @@ import org.hometree.workspacefx.sidebar.Sidebar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class WorkspaceFX extends HBox {
 
@@ -39,6 +40,39 @@ public class WorkspaceFX extends HBox {
     private Sidebar dragAndDropSidebar;
     private AWorkspaceFXPlugin dragAndDropPlugin;
     private Node content;
+
+    private boolean findPlugin(Sidebar s, AWorkspaceFXPlugin plugin) {
+        for (Map.Entry<ToggleButton, AWorkspaceFXPlugin> entry : s.getButtonContentMap().entrySet()) {
+            if (entry.getValue().equals(plugin)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Sidebar getSidebar(AWorkspaceFXPlugin plugin) {
+        Sidebar result;
+        if (findPlugin(leftTop, plugin)) {
+            return leftTop;
+        }
+        if (findPlugin(leftBottom, plugin)) {
+            return leftBottom;
+        }
+        if (findPlugin(bottomLeft, plugin)) {
+            return bottomLeft;
+        }
+
+        if (findPlugin(rightTop, plugin)) {
+            return rightTop;
+        }
+        if (findPlugin(rightBottom, plugin)) {
+            return rightBottom;
+        }
+        if (findPlugin(bottomRight, plugin)) {
+            return bottomRight;
+        }
+        return null;
+    }
 
     public WorkspaceFX() {
         leftTop = new Sidebar(this, Pos.TOP_CENTER, Priority.NEVER, mainTopLeft, Sidebar.SPLITPANE_POSITION.FIRST, Sidebar.SIDEBAR_POSITION.LEFT);
@@ -68,7 +102,7 @@ public class WorkspaceFX extends HBox {
             }
             restoreMainTopDivider();
         });
-        SplitPane.setResizableWithParent(mainTopLeft,false);
+        SplitPane.setResizableWithParent(mainTopLeft, false);
 
         mainTopRight.setOrientation(Orientation.VERTICAL);
         mainTopRight.getItems().addListener((InvalidationListener) observable -> {
@@ -82,7 +116,7 @@ public class WorkspaceFX extends HBox {
             }
             restoreMainTopDivider();
         });
-        SplitPane.setResizableWithParent(mainTopRight,false);
+        SplitPane.setResizableWithParent(mainTopRight, false);
 
         mainTop.setOrientation(Orientation.HORIZONTAL);
         mainTop.getItems().addAll(mainContentPane);
@@ -98,7 +132,7 @@ public class WorkspaceFX extends HBox {
                 restoreMainDivider();
             }
         });
-        SplitPane.setResizableWithParent(mainBottom,false);
+        SplitPane.setResizableWithParent(mainBottom, false);
 
         main.setOrientation(Orientation.VERTICAL);
         main.getItems().addAll(mainTop);
@@ -121,31 +155,31 @@ public class WorkspaceFX extends HBox {
         isHiding = hiding;
     }
 
-    private boolean isHiding=false;
+    private boolean isHiding = false;
 
     public void setContent(Node content) {
         this.content = content;
         mainContentPane.getChildren().setAll(content);
     }
 
-    public void hide(){
+    public void hide() {
         leftTop.hide();
         leftBottom.hide();
         rightTop.hide();
         rightBottom.hide();
         bottomLeft.hide();
         bottomRight.hide();
-        isHiding=true;
+        isHiding = true;
     }
 
-    public void restore(){
+    public void restore() {
         leftTop.restore();
         leftBottom.restore();
         rightTop.restore();
         rightBottom.restore();
         bottomLeft.restore();
         bottomRight.restore();
-        isHiding=false;
+        isHiding = false;
     }
 
     public AWorkspaceFXPlugin getDragAndDropPlugin() {
@@ -224,6 +258,11 @@ public class WorkspaceFX extends HBox {
             case RIGHT_BOTTOM -> rightBottom.addButton(plugin);
             case BOTTOM_RIGHT -> bottomRight.addButton(plugin);
         }
+    }
+
+    public void addPlugin(AWorkspaceFXPlugin plugin, WORKSPACE_POSITION pos, boolean selected) {
+        addPlugin(plugin, pos);
+        getSidebar(plugin).getButton(plugin).setSelected(selected);
     }
 
     public enum WORKSPACE_POSITION {LEFT_TOP, LEFT_BOTTOM, BOTTOM_LEFT, RIGHT_TOP, RIGHT_BOTTOM, BOTTOM_RIGHT}

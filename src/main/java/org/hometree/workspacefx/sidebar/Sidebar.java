@@ -1,13 +1,9 @@
 package org.hometree.workspacefx.sidebar;
 
-import javafx.event.EventHandler;
-import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.SubScene;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.ToggleButton;
@@ -21,14 +17,10 @@ import org.controlsfx.control.PopOver;
 import org.hometree.workspacefx.WorkspaceFX;
 import org.hometree.workspacefx.plugin.AWorkspaceFXPlugin;
 
-import java.security.DrbgParameters;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
+import java.util.Map;
 
 public class Sidebar extends VBox {
-
-    public enum SIDEBAR_POSITION {LEFT, RIGHT}
 
     private final ToggleGroup toggleGroup;
     private final HashMap<ToggleButton, AWorkspaceFXPlugin> buttonContentMap = new HashMap<>();
@@ -37,11 +29,10 @@ public class Sidebar extends VBox {
     private final WorkspaceFX workspaceFX;
     private final String spacerStyle = "-fx-background-color:black;-fx-opacity:.1;-fx-background-radius:5";
     private final String spacerNotStyled = "";// "-fx-background-color:black;";
+    private final SIDEBAR_POSITION sidebarPos;
     private double dividerPos = .5d;
     private int indexToInsertDragAndDropButton;
     private ToggleButton hideRestoreBackup;
-    private SIDEBAR_POSITION sidebarPos;
-
     public Sidebar(WorkspaceFX workspaceFX, Pos alignment, Priority priority, SplitPane contentSplitPane, SPLITPANE_POSITION contentSplitPanePosition, SIDEBAR_POSITION sidebarPos) {
         this.sidebarPos = sidebarPos;
         this.workspaceFX = workspaceFX;
@@ -79,6 +70,10 @@ public class Sidebar extends VBox {
         });
     }
 
+    public HashMap<ToggleButton, AWorkspaceFXPlugin> getButtonContentMap() {
+        return buttonContentMap;
+    }
+
     public void hide() {
         hideRestoreBackup = (ToggleButton) toggleGroup.getSelectedToggle();
         if (hideRestoreBackup != null) {
@@ -109,14 +104,14 @@ public class Sidebar extends VBox {
     }
 
     public void addButton(AWorkspaceFXPlugin plugin) {
-        ToggleButton toggleButton = getButton(plugin);
+        ToggleButton toggleButton = createButton(plugin);
         buttonContentMap.put(toggleButton, plugin);
         getChildren().add(toggleButton);
         getChildren().add(getSpacer());
     }
 
     public void addButton(AWorkspaceFXPlugin plugin, int index, boolean buttonSelected) {
-        ToggleButton toggleButton = getButton(plugin);
+        ToggleButton toggleButton = createButton(plugin);
         buttonContentMap.put(toggleButton, plugin);
         if (getChildren().size() - 1 < index) {
             getChildren().add(toggleButton);
@@ -138,7 +133,16 @@ public class Sidebar extends VBox {
         buttonContentMap.remove(button);
     }
 
-    private ToggleButton getButton(AWorkspaceFXPlugin plugin) {
+    public ToggleButton getButton(AWorkspaceFXPlugin plugin){
+        for (Map.Entry<ToggleButton, AWorkspaceFXPlugin> es : buttonContentMap.entrySet()) {
+            if (es.getValue().equals(plugin)){
+                return es.getKey();
+            }
+        }
+        return null;
+    }
+
+    private ToggleButton createButton(AWorkspaceFXPlugin plugin) {
         ToggleButton button = new ToggleButton();
 
         PopOver popOver = new PopOver();
@@ -261,6 +265,8 @@ public class Sidebar extends VBox {
             event.consume();
         });
     }
+
+    public enum SIDEBAR_POSITION {LEFT, RIGHT}
 
     public enum SPLITPANE_POSITION {FIRST, LAST}
 

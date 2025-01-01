@@ -7,11 +7,15 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.hometree.workspacefx.plugin.WSPDigitalClock;
-import org.hometree.workspacefx.plugin.WSPLabel;
+import org.hometree.workspacefx.plugin.general.WSPButton;
+import org.hometree.workspacefx.plugin.general.WSPDigitalClock;
+import org.hometree.workspacefx.plugin.general.WSPLabel;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignB;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignW;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WorkspaceFXDemo extends Application {
 
@@ -22,11 +26,14 @@ public class WorkspaceFXDemo extends Application {
 
         WorkspaceFX ws = new WorkspaceFX();
 
-        ws.addPlugin(new WSPDigitalClock(), WorkspaceFX.WORKSPACE_POSITION.LEFT_TOP);
+        ws.addPlugin(new WSPDigitalClock(), WorkspaceFX.WORKSPACE_POSITION.LEFT_TOP, true);
         ws.addPlugin(new WSPLabel(MaterialDesignF.FILE_TREE, "left top 1"), WorkspaceFX.WORKSPACE_POSITION.LEFT_TOP);
         ws.addPlugin(new WSPLabel(MaterialDesignF.FILE_TREE, "left top 2"), WorkspaceFX.WORKSPACE_POSITION.LEFT_TOP);
 
-        ws.addPlugin(new WSPLabel(MaterialDesignF.FILE_TREE, "left bottom 1"), WorkspaceFX.WORKSPACE_POSITION.LEFT_BOTTOM);
+        WSPButton logInfo = new WSPButton("Log info", MaterialDesignC.CHAT_OUTLINE, "Log info text button.");
+        logInfo.getButton().setOnAction(event -> log.info("Test log message"));
+        ws.addPlugin(logInfo, WorkspaceFX.WORKSPACE_POSITION.LEFT_BOTTOM, true);
+
         ws.addPlugin(new WSPLabel(MaterialDesignF.FILE_TREE, "left bottom 2"), WorkspaceFX.WORKSPACE_POSITION.LEFT_BOTTOM);
 
         ws.addPlugin(new WSPLabel(MaterialDesignF.FILE_TREE, "bottom left 1"), WorkspaceFX.WORKSPACE_POSITION.BOTTOM_LEFT);
@@ -59,8 +66,10 @@ public class WorkspaceFXDemo extends Application {
         stage.show();
     }
 
+    private static final Logger log = LoggerFactory.getLogger(WorkspaceFXDemo.class);
+
     public static void main(String[] args) {
-        Configurator.initialize(null, "log4j2-demo.xml");
+        Configurator.initialize(null, "log4j2.xml");
         launch();
     }
 }

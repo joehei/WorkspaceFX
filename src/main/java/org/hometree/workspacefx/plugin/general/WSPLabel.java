@@ -1,7 +1,8 @@
-package org.hometree.workspacefx.plugin;
+package org.hometree.workspacefx.plugin.general;
 
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
+import org.hometree.workspacefx.plugin.AWorkspaceFXPlugin;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
 
