@@ -17,12 +17,10 @@
                 <TimeBasedTriggeringPolicy interval="1" modulate="true" />
             </Policies>
         </RollingFile>
-        <WSPLog4j2Appender name="WSPLog4j2Appender"/>
     </Appenders>
     <Loggers>
         <Root level="DEBUG" additivity="false">
             <AppenderRef ref="console" />
-            <AppenderRef ref="WSPLog4j2Appender" />
             <!--<AppenderRef ref="rollingFile" />-->
         </Root>
     </Loggers>

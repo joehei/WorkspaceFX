@@ -1,6 +1,7 @@
 package org.hometree.workspacefx;
 
 import atlantafx.base.theme.NordLight;
+import atlantafx.base.theme.Styles;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -8,10 +9,11 @@ import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.hometree.workspacefx.plugin.clock.WSPAnalogClock;
-import org.hometree.workspacefx.plugin.general.WSPButton;
 import org.hometree.workspacefx.plugin.clock.WSPDigitalClock;
+import org.hometree.workspacefx.plugin.general.WSPButton;
 import org.hometree.workspacefx.plugin.general.WSPLabel;
 import org.hometree.workspacefx.plugin.logging.WSPLog4j2;
+import org.hometree.workspacefx.plugin.logging.WSPLog4j2Utils;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignB;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
@@ -25,21 +27,27 @@ public class WorkspaceFXDemo extends Application {
     public void start(Stage stage) {
 
         Application.setUserAgentStylesheet(new NordLight().getUserAgentStylesheet());
-
         WorkspaceFX ws = new WorkspaceFX();
 
         ws.addPlugin(new WSPDigitalClock(), WorkspaceFX.WORKSPACE_POSITION.LEFT_TOP, true);
-        ws.addPlugin(new WSPAnalogClock(), WorkspaceFX.WORKSPACE_POSITION.LEFT_TOP,true);
+        ws.addPlugin(new WSPAnalogClock(), WorkspaceFX.WORKSPACE_POSITION.LEFT_TOP, true);
         ws.addPlugin(new WSPLabel(MaterialDesignF.FILE_TREE, "left top 2"), WorkspaceFX.WORKSPACE_POSITION.LEFT_TOP);
 
-        WSPButton logInfo = new WSPButton("Log info", MaterialDesignC.CHAT_OUTLINE, "Log info text button.");
-        logInfo.getButton().setOnAction(event -> log.info("Test log message"));
+        WSPButton logInfo = new WSPButton("Logger test", MaterialDesignC.CHAT_OUTLINE, "Log info text button.");
+        logInfo.getButton().setOnAction(event -> {
+            log.info("info");
+            log.warn("warning");
+            log.error("error", new Exception("test"));
+            log.debug("debug");
+        });
         ws.addPlugin(logInfo, WorkspaceFX.WORKSPACE_POSITION.LEFT_BOTTOM, true);
 
         ws.addPlugin(new WSPLabel(MaterialDesignF.FILE_TREE, "left bottom 2"), WorkspaceFX.WORKSPACE_POSITION.LEFT_BOTTOM);
 
         ws.addPlugin(new WSPLabel(MaterialDesignF.FILE_TREE, "bottom left 1"), WorkspaceFX.WORKSPACE_POSITION.BOTTOM_LEFT);
-        ws.addPlugin(new WSPLog4j2(), WorkspaceFX.WORKSPACE_POSITION.BOTTOM_LEFT, true);
+        WSPLog4j2 loggingControl = new WSPLog4j2();
+        WSPLog4j2Utils.addAppender(loggingControl);
+        ws.addPlugin(loggingControl, WorkspaceFX.WORKSPACE_POSITION.BOTTOM_LEFT, true);
 
 
         ws.addPlugin(new WSPLabel(MaterialDesignF.FORMAT_LIST_BULLETED, "right top 1"), WorkspaceFX.WORKSPACE_POSITION.RIGHT_TOP);

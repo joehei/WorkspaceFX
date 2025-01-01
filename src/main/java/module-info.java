@@ -11,13 +11,14 @@ module org.hometree.workspacefx {
 
     opens org.hometree.workspacefx to javafx.fxml;
     opens org.hometree.workspacefx.plugin to javafx.fxml;
+    opens org.hometree.workspacefx.plugin.clock to javafx.fxml;
+    opens org.hometree.workspacefx.plugin.general to javafx.fxml;
+    opens org.hometree.workspacefx.plugin.logging to javafx.fxml, javafx.base;
 
-    exports org.hometree.workspacefx;
-    exports org.hometree.workspacefx.sidebar;
-    exports org.hometree.workspacefx.plugin;
+    exports org.hometree.workspacefx.plugin.clock;
     exports org.hometree.workspacefx.plugin.general;
     exports org.hometree.workspacefx.plugin.logging to org.apache.logging.log4j.core;
-    opens org.hometree.workspacefx.plugin.general to javafx.fxml;
-    exports org.hometree.workspacefx.plugin.clock;
-    opens org.hometree.workspacefx.plugin.clock to javafx.fxml;
+    exports org.hometree.workspacefx.plugin;
+    exports org.hometree.workspacefx.sidebar;
+    exports org.hometree.workspacefx;
 }
