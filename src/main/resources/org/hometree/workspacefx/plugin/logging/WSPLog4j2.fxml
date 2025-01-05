@@ -12,17 +12,13 @@
 
 <VBox xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <HBox fx:id="hBox" alignment="CENTER_RIGHT" spacing="5.0">
-         <padding>
-            <Insets bottom="5.0" top="5.0" />
-         </padding>
+      <HBox alignment="CENTER_RIGHT" spacing="5.0">
          <children>
-            <CustomTextField fx:id="searchTF">
-               <padding>
-                  <Insets right="5.0" />
-               </padding>
-            </CustomTextField>
+            <CustomTextField fx:id="searchTF" prefWidth="250.0" />
          </children>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
       </HBox>
       <TableView fx:id="table" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
         <columns>

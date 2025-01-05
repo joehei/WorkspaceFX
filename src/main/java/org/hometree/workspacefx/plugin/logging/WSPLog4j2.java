@@ -1,8 +1,12 @@
 package org.hometree.workspacefx.plugin.logging;
 
 import atlantafx.base.controls.CustomTextField;
+import atlantafx.base.controls.Message;
 import atlantafx.base.theme.Styles;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
@@ -10,7 +14,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.util.Callback;
 import org.apache.logging.log4j.Level;
@@ -31,6 +34,10 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
     private static final Logger log = LoggerFactory.getLogger(WSPLog4j2.class);
     private final ObservableList<WSPLog4j2LogMessage> messages = FXCollections.observableArrayList();
     private final FilteredList<WSPLog4j2LogMessage> filteredList = new FilteredList<>(messages);
+    private final IntegerProperty infoCounter = new SimpleIntegerProperty();
+    private final IntegerProperty warnCounter = new SimpleIntegerProperty();
+    private final IntegerProperty errCounter = new SimpleIntegerProperty();
+    private final IntegerProperty debugCounter = new SimpleIntegerProperty();
     @FXML
     private HBox hBox;
     @FXML
@@ -75,6 +82,55 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
             log.error(e.getMessage(), e);
         }
     }
+
+    public Integer getInfoCounter() {
+        return infoCounter.getValue();
+    }
+
+    public void setInfoCounter(Integer infoCounter) {
+        this.infoCounter.setValue(infoCounter);
+    }
+
+    public IntegerProperty infoCounterProperty() {
+        return this.infoCounter;
+    }
+
+    public Integer getWarnCounter() {
+        return warnCounter.getValue();
+    }
+
+    public void setWarnCounter(Integer warnCounter) {
+        this.warnCounter.setValue(warnCounter);
+    }
+
+    public IntegerProperty warnCounterProperty() {
+        return this.warnCounter;
+    }
+
+    public Integer getErrCounter() {
+        return errCounter.getValue();
+    }
+
+    public void setErrCounter(Integer errCounter) {
+        this.errCounter.setValue(errCounter);
+    }
+
+    public IntegerProperty errCounterProperty() {
+        return this.errCounter;
+    }
+
+    public Integer getDebugCounter() {
+        return debugCounter.getValue();
+    }
+
+    public void setDebugCounter(Integer debugCounter) {
+        this.debugCounter.setValue(debugCounter);
+    }
+
+    public IntegerProperty debugCounterProperty() {
+        return this.debugCounter;
+    }
+
 
     public ObservableList<WSPLog4j2LogMessage> getMessages() {
         return messages;
@@ -124,10 +180,66 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
         colTS.setCellValueFactory(new PropertyValueFactory<>("ts"));
         colMessage.setCellValueFactory(new PropertyValueFactory<>("message"));
         colException.setCellValueFactory(new PropertyValueFactory<>("throwable"));
+
+        messages.addListener(new ListChangeListener<WSPLog4j2LogMessage>() {
+            @Override
+            public void onChanged(Change<? extends WSPLog4j2LogMessage> change) {
+                change.next();
+                int i = 0;
+                int w = 0;
+                int e = 0;
+                int d = 0;
+                if (change.wasAdded()) {
+                    for (WSPLog4j2LogMessage message : change.getAddedSubList()) {
+                        int level = message.getLevel().intLevel();
+                        if (level == StandardLevel.INFO.intLevel()) {
+                            i++;
+                        }
+                        if (level == StandardLevel.WARN.intLevel()) {
+                            w++;
+                        }
+                        if (level == StandardLevel.ERROR.intLevel()) {
+                            e++;
+                        }
+                        if (level == StandardLevel.DEBUG.intLevel()) {
+                            d++;
+                        }
+                    }
+                }
+                if (change.wasRemoved()) {
+                    for (WSPLog4j2LogMessage message : change.getRemoved()) {
+                        int level = message.getLevel().intLevel();
+                        if (level == StandardLevel.INFO.intLevel()) {
+                            i--;
+                        }
+                        if (level == StandardLevel.WARN.intLevel()) {
+                            w--;
+                        }
+                        if (level == StandardLevel.ERROR.intLevel()) {
+                            e--;
+                        }
+                        if (level == StandardLevel.DEBUG.intLevel()) {
+                            d--;
+                        }
+                    }
+                }
+
+                setInfoCounter(getInfoCounter() + i);
+                setWarnCounter(getWarnCounter() + w);
+                setErrCounter(getErrCounter() + e);
+                setDebugCounter(getDebugCounter() + d);
+            }
+        });
+
+        infoCounterProperty().addListener((obs, ov, nv) -> totalInfo.setText(String.format("%,d", nv.intValue())));
+        warnCounterProperty().addListener((obs, ov, nv) -> totalWarn.setText(String.format("%,d", nv.intValue())));
+        errCounterProperty().addListener((obs, ov, nv) -> totalError.setText(String.format("%,d", nv.intValue())));
+        debugCounterProperty().addListener((obs, ov, nv) -> totalDebug.setText(String.format("%,d", nv.intValue())));
+
     }
 
     private boolean filterMessages(WSPLog4j2LogMessage message) {
-        boolean show = false;
+        boolean show;
         if (searchTF.getText().isBlank()) {
             show = true;
         } else {
@@ -153,9 +265,11 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
 
     private void initSearch() {
         searchTF.textProperty().addListener((obs, ov, nv) -> filteredList.setPredicate(this::filterMessages));
-        FontIcon icon = new FontIcon(MaterialDesignC.CLOSE_THICK);
-        icon.setOnMouseClicked(event -> searchTF.setText(""));
-        searchTF.setRight(icon);
+        FontIcon iconRight = new FontIcon(MaterialDesignC.CLOSE_THICK);
+        FontIcon iconLeft = new FontIcon(MaterialDesignC.CARD_SEARCH_OUTLINE);
+        iconRight.setOnMouseClicked(event -> searchTF.setText(""));
+        searchTF.setRight(iconRight);
+        searchTF.setLeft(iconLeft);
         showInfo.selectedProperty().addListener((obs, ov, nv) -> filteredList.setPredicate(this::filterMessages));
         showWarn.selectedProperty().addListener((obs, ov, nv) -> filteredList.setPredicate(this::filterMessages));
         showError.selectedProperty().addListener((obs, ov, nv) -> filteredList.setPredicate(this::filterMessages));
