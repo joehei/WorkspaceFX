@@ -32,6 +32,7 @@ public class AnalogClockWithClockwork extends StackPane {
         Line line = new Line(unit, unit * 1.1, unit, unit * 0.4);
         line.getTransforms().add(rotate);
         line.setStrokeWidth(6);
+        line.setStroke(Color.GRAY);
         return line;
     }
 
@@ -41,6 +42,7 @@ public class AnalogClockWithClockwork extends StackPane {
         Line line = new Line(unit, unit * 1.1, unit, unit * 0.3);
         line.getTransforms().add(rotate);
         line.setStrokeWidth(4);
+        line.setStroke(Color.GRAY);
         return line;
     }
 
@@ -49,6 +51,7 @@ public class AnalogClockWithClockwork extends StackPane {
         rotate.angleProperty().bind(clockwork.second.multiply(360 / 60));
         Line line = new Line(unit, unit * 1.1, unit, unit * 0.2);
         line.getTransforms().add(rotate);
+        line.setStroke(Color.GRAY);
         return line;
     }
 
@@ -69,12 +72,13 @@ public class AnalogClockWithClockwork extends StackPane {
         Rotate rotate = new Rotate(angle, unit, unit);
         Line line = new Line(unit, unit * 0.12, unit, unit * (n % 3 == 0 ? 0.3 : 0.2));
         line.getTransforms().add(rotate);
+        line.setStroke(Color.GRAY);
         return line;
     }
 
     private Node centerPoint() {
         double radius = 0.05 * unit;
-        return new Circle(unit, unit, radius, Color.BLACK);
+        return new Circle(unit, unit, radius, Color.GRAY);
     }
 
     private Node outerRim() {
@@ -83,7 +87,7 @@ public class AnalogClockWithClockwork extends StackPane {
         double radius = 0.5;
         Circle circle = new Circle(unit, unit, unit);
         circle.setFill(Color.TRANSPARENT);
-        circle.setStroke(Color.BLACK);
+        circle.setStroke(Color.GRAY);
         circle.setStrokeWidth(2);
         return circle;
     }

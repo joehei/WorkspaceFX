@@ -1,5 +1,6 @@
 package org.hometree.workspacefx.sidebar;
 
+import atlantafx.base.controls.Popover;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -13,7 +14,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import org.controlsfx.control.PopOver;
 import org.hometree.workspacefx.WorkspaceFX;
 import org.hometree.workspacefx.plugin.AWorkspaceFXPlugin;
 
@@ -145,12 +145,12 @@ public class Sidebar extends VBox {
     private ToggleButton createButton(AWorkspaceFXPlugin plugin) {
         ToggleButton button = new ToggleButton();
 
-        PopOver popOver = new PopOver();
+        Popover popOver = new Popover();
         popOver.setArrowSize(10);
         double offset;
 
         if (sidebarPos.equals(SIDEBAR_POSITION.RIGHT)) {
-            popOver.setArrowLocation(PopOver.ArrowLocation.RIGHT_CENTER);
+            popOver.setArrowLocation(Popover.ArrowLocation.RIGHT_CENTER);
             offset = -10;
         } else {
             offset = -5;

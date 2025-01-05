@@ -46,7 +46,6 @@ public class WSPLog4j2Appender extends AbstractAppender {
 
     @Override
     public void append(LogEvent event) {
-        System.out.println("logging event " + controls.size());
         ZonedDateTime ts = ZonedDateTime.ofInstant(Instant.ofEpochMilli(event.getTimeMillis()), ZoneId.systemDefault());
         WSPLog4j2LogMessage message = new WSPLog4j2LogMessage(ts, event.getLevel(), event.getMessage().getFormattedMessage(), event.getThrown());
         for (WSPLog4j2 control : controls) {

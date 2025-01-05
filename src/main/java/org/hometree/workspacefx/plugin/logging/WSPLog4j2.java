@@ -12,11 +12,11 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
 import javafx.util.Callback;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.spi.StandardLevel;
 import org.hometree.workspacefx.plugin.AWorkspaceFXPlugin;
+import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.*;
 import org.slf4j.Logger;
@@ -59,6 +59,8 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
     private TableColumn<WSPLog4j2LogMessage, ZonedDateTime> colTS;
     @FXML
     private TableColumn<WSPLog4j2LogMessage, Level> colLevel;
+    @FXML
+    private CustomTextField searchTF;
 
     public WSPLog4j2() {
         try {
@@ -78,50 +80,43 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
         return messages;
     }
 
+    private FontIcon getIcon(Ikon code, String color) {
+        FontIcon icon = new FontIcon(code);
+        Styles.appendStyle(icon, "-fx-fill", color);
+        Styles.appendStyle(icon, "-fx-icon-color", color);
+        return icon;
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        Styles.toggleStyleClass(table, Styles.BORDERED);
-        Styles.toggleStyleClass(table, Styles.DENSE);
-
-        Styles.toggleStyleClass(totalInfo, Styles.BG_SUCCESS_SUBTLE);
-
-
-        initSearchField();
+        Styles.addStyleClass(table, Styles.DENSE);
+        Styles.addStyleClass(table, Styles.BORDERED);
+        initSearch();
 
         table.setItems(filteredList);
         colLevel.setCellValueFactory(new PropertyValueFactory<>("level"));
-        colLevel.setStyle(colLevel.getStyle()+";-fx-alignment: CENTER;");
-        colLevel.setCellFactory(new Callback<TableColumn<WSPLog4j2LogMessage, Level>, TableCell<WSPLog4j2LogMessage, Level>>() {
+        colLevel.setStyle(colLevel.getStyle() + ";-fx-alignment: CENTER;");
+        colLevel.setCellFactory(new Callback<>() {
             @Override
             public TableCell<WSPLog4j2LogMessage, Level> call(TableColumn<WSPLog4j2LogMessage, Level> wspLog4j2LogMessageLevelTableColumn) {
                 return new TableCell<>() {
                     @Override
                     protected void updateItem(Level level, boolean b) {
                         super.updateItem(level, b);
-                        if (level==null){
-                            setGraphic(null);
-                            setText(null);
-                            return;
-                        }
-                        FontIcon icon = new FontIcon(MaterialDesignP.PROGRESS_QUESTION);
-                        if (level.intLevel() == StandardLevel.INFO.intLevel()) {
-                            icon.setIconCode(MaterialDesignI.INFORMATION);
-                            icon.pseudoClassStateChanged(Styles.STATE_SUCCESS, true);
-                        }
-                        if (level.intLevel() == StandardLevel.WARN.intLevel()) {
-                            icon.setIconCode(MaterialDesignA.ALERT_CIRCLE);
-                            icon.pseudoClassStateChanged(Styles.STATE_WARNING, true);
-                        }
-                        if (level.intLevel() == StandardLevel.ERROR.intLevel()) {
-                            icon.setIconCode(MaterialDesignA.ALERT_CIRCLE);
-                            icon.pseudoClassStateChanged(Styles.STATE_DANGER, true);
-                        }
-                        if (level.intLevel() == StandardLevel.DEBUG.intLevel()) {
-                            icon.setIconCode(MaterialDesignC.CARD_SEARCH_OUTLINE);
-                            Styles.appendStyle(icon,"-fx-text-fill", "yellow");
-                        }
                         setText(null);
-                        setGraphic(icon);
+                        if (level == null) {
+                            setGraphic(null);
+                        } else if (level.intLevel() == StandardLevel.INFO.intLevel()) {
+                            setGraphic(getIcon(MaterialDesignI.INFORMATION, "#00e007"));
+                        } else if (level.intLevel() == StandardLevel.WARN.intLevel()) {
+                            setGraphic(getIcon(MaterialDesignA.ALERT, "#d9ed00"));
+                        } else if (level.intLevel() == StandardLevel.ERROR.intLevel()) {
+                            setGraphic(getIcon(MaterialDesignA.ALERT_OCTAGON, "#ff7b7b"));
+                        } else if (level.intLevel() == StandardLevel.DEBUG.intLevel()) {
+                            setGraphic(getIcon(MaterialDesignT.TEXT_BOX_SEARCH_OUTLINE, "lightgray"));
+                        } else {
+                            setGraphic(null);
+                        }
                     }
                 };
             }
@@ -129,21 +124,41 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
         colTS.setCellValueFactory(new PropertyValueFactory<>("ts"));
         colMessage.setCellValueFactory(new PropertyValueFactory<>("message"));
         colException.setCellValueFactory(new PropertyValueFactory<>("throwable"));
-
     }
 
-    private void initSearchField() {
-        var searchTF = new CustomTextField();
-        searchTF.setMinWidth(500);
-        searchTF.setPromptText("Search ...");
+    private boolean filterMessages(WSPLog4j2LogMessage message) {
+        boolean show = false;
+        if (searchTF.getText().isBlank()) {
+            show = true;
+        } else {
+            show = message.getMessage().contains(searchTF.getText());
+        }
+
+        int level = message.getLevel().intLevel();
+        if (level == StandardLevel.INFO.intLevel()) {
+            show = show && showInfo.isSelected();
+        }
+        if (level == StandardLevel.WARN.intLevel()) {
+            show = show && showWarn.isSelected();
+        }
+        if (level == StandardLevel.ERROR.intLevel()) {
+            show = show && showError.isSelected();
+        }
+        if (level == StandardLevel.DEBUG.intLevel()) {
+            show = show && showDebug.isSelected();
+        }
+
+        return show;
+    }
+
+    private void initSearch() {
+        searchTF.textProperty().addListener((obs, ov, nv) -> filteredList.setPredicate(this::filterMessages));
         FontIcon icon = new FontIcon(MaterialDesignC.CLOSE_THICK);
-        icon.setOnMouseClicked(event -> {
-            if (event.getButton().equals(MouseButton.PRIMARY)) {
-                searchTF.setText("");
-            }
-        });
+        icon.setOnMouseClicked(event -> searchTF.setText(""));
         searchTF.setRight(icon);
-        searchTF.setPrefWidth(150);
-        hBox.getChildren().add(searchTF);
+        showInfo.selectedProperty().addListener((obs, ov, nv) -> filteredList.setPredicate(this::filterMessages));
+        showWarn.selectedProperty().addListener((obs, ov, nv) -> filteredList.setPredicate(this::filterMessages));
+        showError.selectedProperty().addListener((obs, ov, nv) -> filteredList.setPredicate(this::filterMessages));
+        showDebug.selectedProperty().addListener((obs, ov, nv) -> filteredList.setPredicate(this::filterMessages));
     }
 }

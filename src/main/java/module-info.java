@@ -3,7 +3,6 @@ module org.hometree.workspacefx {
     requires javafx.controls;
     requires javafx.fxml;
     requires org.apache.logging.log4j.core;
-    requires org.controlsfx.controls;
     requires org.kordamp.ikonli.core;
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.ikonli.materialdesign2;
