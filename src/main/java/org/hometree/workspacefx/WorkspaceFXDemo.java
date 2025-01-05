@@ -25,6 +25,13 @@ import org.slf4j.LoggerFactory;
 
 public class WorkspaceFXDemo extends Application {
 
+    private static final Logger log = LoggerFactory.getLogger(WorkspaceFXDemo.class);
+
+    public static void main(String[] args) {
+        Configurator.initialize(null, "log4j2.xml");
+        launch();
+    }
+
     @Override
     public void start(Stage stage) {
 
@@ -75,13 +82,7 @@ public class WorkspaceFXDemo extends Application {
 
         Scene scene = new Scene(ws, 1400, 1000);
         stage.setScene(scene);
+        stage.setTitle("WorkspaceFX demo");
         stage.show();
-    }
-
-    private static final Logger log = LoggerFactory.getLogger(WorkspaceFXDemo.class);
-
-    public static void main(String[] args) {
-        Configurator.initialize(null, "log4j2.xml");
-        launch();
     }
 }
