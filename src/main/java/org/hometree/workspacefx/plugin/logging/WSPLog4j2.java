@@ -27,11 +27,13 @@ import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
 
     private static final Logger log = LoggerFactory.getLogger(WSPLog4j2.class);
+    private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss,SSS");
     private final ObservableList<WSPLog4j2LogMessage> messages = FXCollections.observableArrayList();
     private final FilteredList<WSPLog4j2LogMessage> filteredList = new FilteredList<>(messages);
     private final IntegerProperty infoCounter = new SimpleIntegerProperty();
@@ -68,6 +70,10 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
     private TableColumn<WSPLog4j2LogMessage, Level> colLevel;
     @FXML
     private CustomTextField searchTF;
+    @FXML
+    private Button clearAll;
+    @FXML
+    private ToggleButton scrollToEnd;
 
     public WSPLog4j2() {
         try {
@@ -149,6 +155,8 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
         Styles.addStyleClass(table, Styles.BORDERED);
         initSearch();
 
+        clearAll.setOnAction(event -> messages.clear());
+
         table.setItems(filteredList);
         colLevel.setCellValueFactory(new PropertyValueFactory<>("level"));
         colLevel.setStyle(colLevel.getStyle() + ";-fx-alignment: CENTER;");
@@ -178,57 +186,74 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
             }
         });
         colTS.setCellValueFactory(new PropertyValueFactory<>("ts"));
+        colTS.setCellFactory(new Callback<TableColumn<WSPLog4j2LogMessage, ZonedDateTime>, TableCell<WSPLog4j2LogMessage, ZonedDateTime>>() {
+            @Override
+            public TableCell<WSPLog4j2LogMessage, ZonedDateTime> call(TableColumn<WSPLog4j2LogMessage, ZonedDateTime> param) {
+                return new TableCell<>() {
+                    @Override
+                    protected void updateItem(ZonedDateTime item, boolean empty) {
+                        super.updateItem(item, empty);
+                        setGraphic(null);
+                        if (empty){
+                            setText(null);
+                        } else {
+                            setText(dtf.format(item));
+                        }
+                    }
+                };
+            }
+        });
         colMessage.setCellValueFactory(new PropertyValueFactory<>("message"));
         colException.setCellValueFactory(new PropertyValueFactory<>("throwable"));
 
-        messages.addListener(new ListChangeListener<WSPLog4j2LogMessage>() {
-            @Override
-            public void onChanged(Change<? extends WSPLog4j2LogMessage> change) {
-                change.next();
-                int i = 0;
-                int w = 0;
-                int e = 0;
-                int d = 0;
-                if (change.wasAdded()) {
-                    for (WSPLog4j2LogMessage message : change.getAddedSubList()) {
-                        int level = message.getLevel().intLevel();
-                        if (level == StandardLevel.INFO.intLevel()) {
-                            i++;
-                        }
-                        if (level == StandardLevel.WARN.intLevel()) {
-                            w++;
-                        }
-                        if (level == StandardLevel.ERROR.intLevel()) {
-                            e++;
-                        }
-                        if (level == StandardLevel.DEBUG.intLevel()) {
-                            d++;
-                        }
+        messages.addListener((ListChangeListener<WSPLog4j2LogMessage>) change -> {
+            change.next();
+            int i = 0;
+            int w = 0;
+            int e = 0;
+            int d = 0;
+            if (change.wasAdded()) {
+                for (WSPLog4j2LogMessage message : change.getAddedSubList()) {
+                    int level = message.getLevel().intLevel();
+                    if (level == StandardLevel.INFO.intLevel()) {
+                        i++;
+                    }
+                    if (level == StandardLevel.WARN.intLevel()) {
+                        w++;
+                    }
+                    if (level == StandardLevel.ERROR.intLevel()) {
+                        e++;
+                    }
+                    if (level == StandardLevel.DEBUG.intLevel()) {
+                        d++;
                     }
                 }
-                if (change.wasRemoved()) {
-                    for (WSPLog4j2LogMessage message : change.getRemoved()) {
-                        int level = message.getLevel().intLevel();
-                        if (level == StandardLevel.INFO.intLevel()) {
-                            i--;
-                        }
-                        if (level == StandardLevel.WARN.intLevel()) {
-                            w--;
-                        }
-                        if (level == StandardLevel.ERROR.intLevel()) {
-                            e--;
-                        }
-                        if (level == StandardLevel.DEBUG.intLevel()) {
-                            d--;
-                        }
-                    }
+                if (scrollToEnd.isSelected()) {
+                    table.scrollTo(table.getItems().indexOf(table.getItems().getLast()));
                 }
-
-                setInfoCounter(getInfoCounter() + i);
-                setWarnCounter(getWarnCounter() + w);
-                setErrCounter(getErrCounter() + e);
-                setDebugCounter(getDebugCounter() + d);
             }
+            if (change.wasRemoved()) {
+                for (WSPLog4j2LogMessage message : change.getRemoved()) {
+                    int level = message.getLevel().intLevel();
+                    if (level == StandardLevel.INFO.intLevel()) {
+                        i--;
+                    }
+                    if (level == StandardLevel.WARN.intLevel()) {
+                        w--;
+                    }
+                    if (level == StandardLevel.ERROR.intLevel()) {
+                        e--;
+                    }
+                    if (level == StandardLevel.DEBUG.intLevel()) {
+                        d--;
+                    }
+                }
+            }
+
+            setInfoCounter(getInfoCounter() + i);
+            setWarnCounter(getWarnCounter() + w);
+            setErrCounter(getErrCounter() + e);
+            setDebugCounter(getDebugCounter() + d);
         });
 
         infoCounterProperty().addListener((obs, ov, nv) -> totalInfo.setText(String.format("%,d", nv.intValue())));

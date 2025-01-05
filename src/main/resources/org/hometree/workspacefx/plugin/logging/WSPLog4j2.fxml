@@ -2,18 +2,38 @@
 
 <?import atlantafx.base.controls.CustomTextField?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <VBox xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <HBox alignment="CENTER_RIGHT" spacing="5.0">
          <children>
+            <ToggleButton fx:id="scrollToEnd" mnemonicParsing="false" selected="true">
+               <graphic>
+                  <FontIcon iconLiteral="mdi2f-format-vertical-align-bottom" iconSize="16" />
+               </graphic>
+               <tooltip>
+                  <Tooltip text="Scroll to end" />
+               </tooltip>
+            </ToggleButton>
+            <Button fx:id="clearAll" mnemonicParsing="false">
+               <graphic>
+                  <FontIcon iconLiteral="mdi2t-trash-can-outline" iconSize="16" />
+               </graphic>
+               <tooltip>
+                  <Tooltip text="Clear all" />
+               </tooltip>
+            </Button>
             <CustomTextField fx:id="searchTF" prefWidth="250.0" />
          </children>
          <padding>
@@ -23,7 +43,7 @@
       <TableView fx:id="table" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
         <columns>
           <TableColumn fx:id="colLevel" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" />
-          <TableColumn fx:id="colTS" prefWidth="75.0" text="Timestamp" />
+          <TableColumn fx:id="colTS" maxWidth="200.0" minWidth="180.0" prefWidth="180.0" text="Timestamp" />
             <TableColumn fx:id="colMessage" prefWidth="75.0" text="Message" />
             <TableColumn fx:id="colException" editable="false" prefWidth="75.0" text="Exception" visible="false" />
         </columns>
