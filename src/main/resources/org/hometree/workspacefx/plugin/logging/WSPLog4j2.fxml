@@ -16,8 +16,9 @@
 
 <VBox xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <HBox alignment="CENTER_RIGHT" spacing="5.0">
+      <HBox alignment="BOTTOM_LEFT" spacing="5.0">
          <children>
+            <CustomTextField fx:id="searchTF" prefWidth="250.0" />
             <ToggleButton fx:id="scrollToEnd" mnemonicParsing="false" selected="true">
                <graphic>
                   <FontIcon iconLiteral="mdi2f-format-vertical-align-bottom" iconSize="16" />
@@ -34,10 +35,17 @@
                   <Tooltip text="Clear all" />
                </tooltip>
             </Button>
-            <CustomTextField fx:id="searchTF" prefWidth="250.0" />
+            <Button fx:id="clearFilter" mnemonicParsing="false">
+               <graphic>
+                  <FontIcon iconLiteral="mdi2f-filter-remove-outline" iconSize="16" />
+               </graphic>
+               <tooltip>
+                  <Tooltip text="Clear filter" />
+               </tooltip>
+            </Button>
          </children>
          <padding>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            <Insets bottom="5.0" top="5.0" />
          </padding>
       </HBox>
       <TableView fx:id="table" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">

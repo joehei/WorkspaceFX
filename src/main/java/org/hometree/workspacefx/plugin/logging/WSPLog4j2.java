@@ -73,6 +73,8 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
     @FXML
     private Button clearAll;
     @FXML
+    private Button clearFilter;
+    @FXML
     private ToggleButton scrollToEnd;
 
     public WSPLog4j2() {
@@ -137,7 +139,6 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
         return this.debugCounter;
     }
 
-
     public ObservableList<WSPLog4j2LogMessage> getMessages() {
         return messages;
     }
@@ -156,6 +157,13 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
         initSearch();
 
         clearAll.setOnAction(event -> messages.clear());
+        clearFilter.setOnAction(event ->{
+            searchTF.setText("");
+            showInfo.setSelected(true);
+            showWarn.setSelected(true);
+            showError.setSelected(true);
+            showDebug.setSelected(true);
+        });
 
         table.setItems(filteredList);
         colLevel.setCellValueFactory(new PropertyValueFactory<>("level"));
