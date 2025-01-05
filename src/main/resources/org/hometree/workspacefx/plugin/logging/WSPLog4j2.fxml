@@ -17,10 +17,10 @@
             <Insets bottom="5.0" top="5.0" />
          </padding>
          <children>
-            <CustomTextField fx:id="searchTF" prefWidth="250.0">
-               <HBox.margin>
+            <CustomTextField fx:id="searchTF">
+               <padding>
                   <Insets right="5.0" />
-               </HBox.margin>
+               </padding>
             </CustomTextField>
          </children>
       </HBox>
