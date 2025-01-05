@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.hometree.workspacefx.plugin.clock.WSPAnalogClock;
 import org.hometree.workspacefx.plugin.clock.WSPDigitalClock;
+import org.hometree.workspacefx.plugin.fxproperty.WSPFXProperty;
 import org.hometree.workspacefx.plugin.general.WSPButton;
 import org.hometree.workspacefx.plugin.general.WSPLabel;
 import org.hometree.workspacefx.plugin.logging.WSPLog4j2;
@@ -27,7 +28,7 @@ public class WorkspaceFXDemo extends Application {
     @Override
     public void start(Stage stage) {
 
-        Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
+        Application.setUserAgentStylesheet(new NordLight().getUserAgentStylesheet());
         WorkspaceFX ws = new WorkspaceFX();
 
         ws.addPlugin(new WSPDigitalClock(), WorkspaceFX.WORKSPACE_POSITION.LEFT_TOP, true);
@@ -51,7 +52,7 @@ public class WorkspaceFXDemo extends Application {
         ws.addPlugin(loggingControl, WorkspaceFX.WORKSPACE_POSITION.BOTTOM_LEFT, true);
 
 
-        ws.addPlugin(new WSPLabel(MaterialDesignF.FORMAT_LIST_BULLETED, "right top 1"), WorkspaceFX.WORKSPACE_POSITION.RIGHT_TOP);
+        ws.addPlugin(new WSPFXProperty(), WorkspaceFX.WORKSPACE_POSITION.RIGHT_TOP);
         ws.addPlugin(new WSPLabel(MaterialDesignF.FORMAT_LIST_BULLETED, "right top 2"), WorkspaceFX.WORKSPACE_POSITION.RIGHT_TOP);
 
         ws.addPlugin(new WSPLabel(MaterialDesignB.BELL, "right bottom 1"), WorkspaceFX.WORKSPACE_POSITION.RIGHT_BOTTOM);
@@ -72,7 +73,7 @@ public class WorkspaceFXDemo extends Application {
         });
         ws.setContent(mainContent);
 
-        Scene scene = new Scene(ws, 800, 600);
+        Scene scene = new Scene(ws, 1400, 1000);
         stage.setScene(scene);
         stage.show();
     }
