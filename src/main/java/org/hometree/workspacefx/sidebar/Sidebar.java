@@ -33,6 +33,7 @@ public class Sidebar extends VBox {
     private double dividerPos = .5d;
     private int indexToInsertDragAndDropButton;
     private ToggleButton hideRestoreBackup;
+
     public Sidebar(WorkspaceFX workspaceFX, Pos alignment, Priority priority, SplitPane contentSplitPane, SPLITPANE_POSITION contentSplitPanePosition, SIDEBAR_POSITION sidebarPos) {
         this.sidebarPos = sidebarPos;
         this.workspaceFX = workspaceFX;
@@ -100,6 +101,7 @@ public class Sidebar extends VBox {
     private void restoreDivider() {
         if (!contentSplitPane.getDividers().isEmpty()) {
             contentSplitPane.getDividers().getFirst().setPosition(dividerPos);
+            contentSplitPane.getDividers().getFirst().positionProperty().addListener((observableValue, oldValue, newValue) -> dividerPos = newValue.doubleValue());
         }
     }
 
@@ -133,9 +135,9 @@ public class Sidebar extends VBox {
         buttonContentMap.remove(button);
     }
 
-    public ToggleButton getButton(AWorkspaceFXPlugin plugin){
+    public ToggleButton getButton(AWorkspaceFXPlugin plugin) {
         for (Map.Entry<ToggleButton, AWorkspaceFXPlugin> es : buttonContentMap.entrySet()) {
-            if (es.getValue().equals(plugin)){
+            if (es.getValue().equals(plugin)) {
                 return es.getKey();
             }
         }
