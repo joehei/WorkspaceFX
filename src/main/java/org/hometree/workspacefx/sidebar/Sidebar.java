@@ -30,8 +30,8 @@ public class Sidebar extends VBox {
     private final SplitPane contentSplitPane;
     private final SPLITPANE_POSITION contentSplitPanePosition;
     private final WorkspaceFX workspaceFX;
-    private final String spacerStyle = "-fx-background-color:black;-fx-opacity:.1;-fx-background-radius:5";
-    private final String spacerNotStyled = "";// "-fx-background-color:black;";
+    private final String spacerStyle = "-fx-background-color:black;-fx-opacity:.1;";
+    private final String spacerNotStyled = ""; //""-fx-background-color:black;";
     private final SIDEBAR_POSITION sidebarPos;
     private double dividerPos = .5d;
     private int indexToInsertDragAndDropButton;
@@ -72,6 +72,7 @@ public class Sidebar extends VBox {
                 contentSplitPane.getItems().remove(buttonContentMap.get((ToggleButton) ov).getContent());
             }
         });
+        setupDragAndDrop();
     }
 
     public HashMap<ToggleButton, AWorkspaceFXPlugin> getButtonContentMap() {
@@ -202,22 +203,6 @@ public class Sidebar extends VBox {
     }
 
     private void setupDragAndDropTarget(ToggleButton button) {
-        // Target sidebar (vbox)
-        setOnDragOver(event -> {
-            removeStyleFromAllSpacer();
-            if (event.getGestureSource() != button && event.getDragboard().hasString() && event.getDragboard().getString().startsWith("WorkspaceFX_")) {
-                event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-                if (getChildren().getLast() instanceof StackPane spacer) {
-                    spacer.setStyle(spacerStyle);
-                    indexToInsertDragAndDropButton = getChildren().indexOf(spacer) + 1;
-                } else {
-                    System.out.println("Warning last element is not a spacer.");
-                }
-            }
-        });
-        setOnDragExited(event -> removeStyleFromAllSpacer());
-        setOnDragDropped(this::insertDraggedButton);
-
         // Target button
         button.setOnDragOver(event -> {
             removeStyleFromAllSpacer();
@@ -245,6 +230,24 @@ public class Sidebar extends VBox {
         });
         button.setOnDragExited(event -> removeStyleFromAllSpacer());
         button.setOnDragDropped(this::insertDraggedButton);
+    }
+
+    private void setupDragAndDrop() {
+        // Target sidebar (vbox)
+        setOnDragOver(event -> {
+            removeStyleFromAllSpacer();
+            if (event.getDragboard().hasString() && event.getDragboard().getString().startsWith("WorkspaceFX_")) {
+                event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+                if (getChildren().getLast() instanceof StackPane spacer) {
+                    spacer.setStyle(spacerStyle);
+                    indexToInsertDragAndDropButton = getChildren().indexOf(spacer) + 1;
+                } else {
+                    System.out.println("Warning last element is not a spacer.");
+                }
+            }
+        });
+        setOnDragExited(event -> removeStyleFromAllSpacer());
+        setOnDragDropped(this::insertDraggedButton);
     }
 
     private void setupDragAndDropSource(ToggleButton button) {

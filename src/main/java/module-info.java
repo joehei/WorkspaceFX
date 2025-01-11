@@ -18,7 +18,7 @@ module org.hometree.workspacefx {
     exports org.hometree.workspacefx.plugin.clock;
     exports org.hometree.workspacefx.plugin.fxproperty;
     exports org.hometree.workspacefx.plugin.general;
-    exports org.hometree.workspacefx.plugin.logging to org.apache.logging.log4j.core;
+    exports org.hometree.workspacefx.plugin.logging;
     exports org.hometree.workspacefx.plugin;
     exports org.hometree.workspacefx.sidebar;
     exports org.hometree.workspacefx;
