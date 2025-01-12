@@ -17,6 +17,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.util.Callback;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.spi.StandardLevel;
 import org.hometree.workspacefx.plugin.AWorkspaceFXPlugin;
 import org.kordamp.ikonli.Ikon;
@@ -40,8 +41,7 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
     private final IntegerProperty warnCounter = new SimpleIntegerProperty();
     private final IntegerProperty errCounter = new SimpleIntegerProperty();
     private final IntegerProperty debugCounter = new SimpleIntegerProperty();
-    @FXML
-    private HBox hBox;
+
     @FXML
     private CheckBox showDebug;
     @FXML
@@ -76,6 +76,8 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
     private Button clearFilter;
     @FXML
     private ToggleButton scrollToEnd;
+    @FXML
+    private ToggleButton toggleDebugMode;
 
     public WSPLog4j2() {
         try {
@@ -157,7 +159,7 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
         initSearch();
 
         clearAll.setOnAction(event -> messages.clear());
-        clearFilter.setOnAction(event ->{
+        clearFilter.setOnAction(event -> {
             searchTF.setText("");
             showInfo.setSelected(true);
             showWarn.setSelected(true);
@@ -202,7 +204,7 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
                     protected void updateItem(ZonedDateTime item, boolean empty) {
                         super.updateItem(item, empty);
                         setGraphic(null);
-                        if (empty){
+                        if (empty) {
                             setText(null);
                         } else {
                             setText(dtf.format(item));
@@ -213,6 +215,16 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
         });
         colMessage.setCellValueFactory(new PropertyValueFactory<>("message"));
         colException.setCellValueFactory(new PropertyValueFactory<>("throwable"));
+
+        toggleDebugMode.selectedProperty().addListener((obs, ov, nv) -> {
+            if (nv!=null){
+                if (nv){
+                    Configurator.setRootLevel(Level.DEBUG);
+                } else {
+                    Configurator.setRootLevel(Level.INFO);
+                }
+            }
+        });
 
         messages.addListener((ListChangeListener<WSPLog4j2LogMessage>) change -> {
             change.next();
@@ -236,7 +248,11 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
                         d++;
                     }
                 }
-                if (scrollToEnd.isSelected()) {
+
+
+                if (scrollToEnd.isSelected() &&
+                        !table.getItems().isEmpty() &&
+                        table.getItems().contains(table.getItems().getLast())) {
                     table.scrollTo(table.getItems().indexOf(table.getItems().getLast()));
                 }
             }
