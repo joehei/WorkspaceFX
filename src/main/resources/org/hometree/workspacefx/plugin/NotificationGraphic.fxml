@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Circle?>
+
+<fx:root alignment="TOP_RIGHT" minHeight="-Infinity" minWidth="-Infinity" type="StackPane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Circle fx:id="notificationCircle" mouseTransparent="true" radius="3.0" stroke="TRANSPARENT" strokeMiterLimit="0.0" strokeType="INSIDE" style="-fx-fill: -color-accent-3;">
+         <StackPane.margin>
+            <Insets />
+         </StackPane.margin>
+      </Circle>
+   </children>
+</fx:root>

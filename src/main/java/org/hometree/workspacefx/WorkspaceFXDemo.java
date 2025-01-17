@@ -36,7 +36,7 @@ public class WorkspaceFXDemo extends Application {
     @Override
     public void start(Stage stage) {
 
-        Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
+        Application.setUserAgentStylesheet(new NordLight().getUserAgentStylesheet());
         WorkspaceFX ws = new WorkspaceFX();
 
         ws.addPlugin(new WSPDigitalClock(), WorkspaceFX.WORKSPACE_POSITION.LEFT_TOP, true);
@@ -61,7 +61,7 @@ public class WorkspaceFXDemo extends Application {
 
 
         ws.addPlugin(new WSPFXProperty(), WorkspaceFX.WORKSPACE_POSITION.RIGHT_TOP);
-        ws.addPlugin(new WSPCalendar(), WorkspaceFX.WORKSPACE_POSITION.RIGHT_TOP,true);
+        ws.addPlugin(new WSPCalendar(), WorkspaceFX.WORKSPACE_POSITION.RIGHT_TOP, true);
 
         ws.addPlugin(new WSPLabel(MaterialDesignB.BELL, "right bottom 1"), WorkspaceFX.WORKSPACE_POSITION.RIGHT_BOTTOM);
         ws.addPlugin(new WSPLabel(MaterialDesignB.BELL, "right bottom 2"), WorkspaceFX.WORKSPACE_POSITION.RIGHT_BOTTOM);
@@ -84,6 +84,7 @@ public class WorkspaceFXDemo extends Application {
         Scene scene = new Scene(ws, 1400, 1000);
         stage.setScene(scene);
         stage.setTitle("WorkspaceFX demo");
+        stage.setOnCloseRequest(event -> System.exit(0));
         stage.show();
     }
 }

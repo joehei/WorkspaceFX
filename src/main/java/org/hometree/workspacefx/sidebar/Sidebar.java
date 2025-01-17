@@ -43,6 +43,7 @@ public class Sidebar extends VBox {
         this.contentSplitPane = contentSplitPane;
         this.contentSplitPanePosition = contentSplitPanePosition;
         toggleGroup = new ToggleGroup();
+        setMinWidth(49);
         setPadding(new Insets(3));
         setVgrow(this, priority);
         setAlignment(alignment);
@@ -174,8 +175,9 @@ public class Sidebar extends VBox {
         setupDragAndDropTarget(button);
         button.setMinWidth(28);
         button.setMinHeight(28);
-        button.setGraphic(plugin.getToggleButtonContent());
+        button.setGraphic(plugin.getButtonGraphic());
         toggleGroup.getToggles().add(button);
+        button.selectedProperty().addListener((obs, ov, nv) -> plugin.setPluginSelected(nv));
         return button;
     }
 

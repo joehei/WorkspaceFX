@@ -1,7 +1,6 @@
 package org.hometree.workspacefx.plugin.logging;
 
 import atlantafx.base.controls.CustomTextField;
-import atlantafx.base.controls.Message;
 import atlantafx.base.theme.Styles;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -14,7 +13,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.HBox;
 import javafx.util.Callback;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -80,14 +78,35 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
     private ToggleButton toggleDebugMode;
 
     public WSPLog4j2() {
+        super();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(getClass().getSimpleName() + ".fxml"));
             loader.setController(this);
             setContent(loader.load());
             setShortDescription("Logging");
-            FontIcon icon = new FontIcon(MaterialDesignF.FORMAT_LIST_TEXT);
-            icon.setIconSize(16);
-            setToggleButtonContent(icon);
+            setToggleButtonContent(MaterialDesignF.FORMAT_LIST_TEXT);
+
+            // Define when a notification should be shown
+            getMessages().addListener((ListChangeListener<WSPLog4j2LogMessage>) c -> {
+                c.next();
+                // When no log entries are in the list, hide the notification circle
+                if (getMessages().isEmpty()) {
+                    getButtonGraphic().setShowNotification(false);
+                    return;
+                }
+                // If something was added and the plugin is not shown, show the circle, otherwise hide
+                if (c.wasAdded()) {
+                    getButtonGraphic().setShowNotification(!getPluginSelected());
+                }
+            });
+
+            // When the plugin is shown the notification should be hidden
+            pluginSelectedProperty().addListener((obs, ov, nv) -> {
+                if (nv) {
+                    getButtonGraphic().setShowNotification(false);
+                }
+            });
+
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -217,8 +236,8 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
         colException.setCellValueFactory(new PropertyValueFactory<>("throwable"));
 
         toggleDebugMode.selectedProperty().addListener((obs, ov, nv) -> {
-            if (nv!=null){
-                if (nv){
+            if (nv != null) {
+                if (nv) {
                     Configurator.setRootLevel(Level.DEBUG);
                 } else {
                     Configurator.setRootLevel(Level.INFO);
