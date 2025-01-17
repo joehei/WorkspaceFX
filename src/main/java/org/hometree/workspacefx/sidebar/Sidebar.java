@@ -30,7 +30,7 @@ public class Sidebar extends VBox {
     private final SplitPane contentSplitPane;
     private final SPLITPANE_POSITION contentSplitPanePosition;
     private final WorkspaceFX workspaceFX;
-    private final String spacerStyle = "-fx-background-color:black;-fx-opacity:.1;";
+    private final String spacerStyle = "-fx-background-color:-color-accent-3;";
     private final String spacerNotStyled = ""; //""-fx-background-color:black;";
     private final SIDEBAR_POSITION sidebarPos;
     private double dividerPos = .5d;

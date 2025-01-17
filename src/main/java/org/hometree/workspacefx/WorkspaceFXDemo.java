@@ -36,7 +36,7 @@ public class WorkspaceFXDemo extends Application {
     @Override
     public void start(Stage stage) {
 
-        Application.setUserAgentStylesheet(new NordLight().getUserAgentStylesheet());
+        Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
         WorkspaceFX ws = new WorkspaceFX();
 
         ws.addPlugin(new WSPDigitalClock(), WorkspaceFX.WORKSPACE_POSITION.LEFT_TOP, true);
