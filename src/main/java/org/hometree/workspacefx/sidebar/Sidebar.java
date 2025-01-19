@@ -164,8 +164,10 @@ public class Sidebar extends VBox {
         }
 
         Label label = new Label(plugin.getShortDescription());
-        label.setFont(Font.font(12));
+        label.setFont(Font.font("Monospaced", 11));
+
         StackPane content = new StackPane(label);
+        plugin.shortDescriptionProperty().addListener((obs, ov, nv) -> label.setText(nv));
         content.setPadding(new Insets(5));
         popOver.setContentNode(content);
         popOver.setArrowSize(0);

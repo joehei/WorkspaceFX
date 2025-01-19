@@ -9,9 +9,9 @@ public abstract class AWorkspaceFXPlugin {
 
     private final BooleanProperty pluginSelected = new SimpleBooleanProperty();
     private final IntegerProperty defaultIconSize = new SimpleIntegerProperty(16);
-    private final ObjectProperty<Node> toggleButtonContent = new SimpleObjectProperty<Node>();
+    private final ObjectProperty<Node> toggleButtonContent = new SimpleObjectProperty<>();
+    private final StringProperty shortDescription = new SimpleStringProperty();
     private Node content;
-    private String shortDescription = "";
     private NotificationGraphic notificationGraphic;
 
     public AWorkspaceFXPlugin() {
@@ -23,6 +23,18 @@ public abstract class AWorkspaceFXPlugin {
         setToggleButtonContent(toggleButtonContent);
         this.content = content;
         this.notificationGraphic = new NotificationGraphic(getToggleButtonContent());
+    }
+
+    public String getShortDescription() {
+        return shortDescription.getValue();
+    }
+
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription.setValue(shortDescription);
+    }
+
+    public StringProperty shortDescriptionProperty() {
+        return this.shortDescription;
     }
 
     private void setup() {
@@ -71,13 +83,6 @@ public abstract class AWorkspaceFXPlugin {
         return this.pluginSelected;
     }
 
-    public String getShortDescription() {
-        return shortDescription;
-    }
-
-    public void setShortDescription(String shortDescription) {
-        this.shortDescription = shortDescription;
-    }
 
     public NotificationGraphic getButtonGraphic() {
         return notificationGraphic;

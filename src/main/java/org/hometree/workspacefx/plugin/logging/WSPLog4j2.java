@@ -215,7 +215,7 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
             }
         });
         colTS.setCellValueFactory(new PropertyValueFactory<>("ts"));
-        colTS.setCellFactory(new Callback<TableColumn<WSPLog4j2LogMessage, ZonedDateTime>, TableCell<WSPLog4j2LogMessage, ZonedDateTime>>() {
+        colTS.setCellFactory(new Callback<>() {
             @Override
             public TableCell<WSPLog4j2LogMessage, ZonedDateTime> call(TableColumn<WSPLog4j2LogMessage, ZonedDateTime> param) {
                 return new TableCell<>() {
@@ -299,11 +299,20 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
             setDebugCounter(getDebugCounter() + d);
         });
 
-        infoCounterProperty().addListener((obs, ov, nv) -> totalInfo.setText(String.format("%,d", nv.intValue())));
-        warnCounterProperty().addListener((obs, ov, nv) -> totalWarn.setText(String.format("%,d", nv.intValue())));
-        errCounterProperty().addListener((obs, ov, nv) -> totalError.setText(String.format("%,d", nv.intValue())));
-        debugCounterProperty().addListener((obs, ov, nv) -> totalDebug.setText(String.format("%,d", nv.intValue())));
+        infoCounterProperty().addListener((obs, ov, nv) -> updateCounter(nv.intValue(), totalInfo));
+        warnCounterProperty().addListener((obs, ov, nv) -> updateCounter(nv.intValue(), totalWarn));
+        errCounterProperty().addListener((obs, ov, nv) -> updateCounter(nv.intValue(), totalError));
+        debugCounterProperty().addListener((obs, ov, nv) -> updateCounter(nv.intValue(), totalDebug));
 
+    }
+
+    private void updateCounter(int value, Label label) {
+        label.setText(String.format("%,d", value));
+        setShortDescription("Logging\n" +
+                "Info   : " + infoCounter.getValue() + "\n" +
+                "Warning: " + warnCounter.getValue() + "\n" +
+                "Error  : " + errCounter.getValue() + "\n" +
+                "Debug  : " + debugCounter.getValue());
     }
 
     private boolean filterMessages(WSPLog4j2LogMessage message) {
