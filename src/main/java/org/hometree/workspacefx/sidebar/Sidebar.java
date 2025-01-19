@@ -5,10 +5,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.control.Label;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -25,18 +22,26 @@ import java.util.Map;
 
 public class Sidebar extends VBox {
 
+    private final String spacerStyle = "-fx-background-color:-color-accent-3;";
+    private final String spacerNotStyled = ""; //""-fx-background-color:black;";
     private final ToggleGroup toggleGroup;
     private final HashMap<ToggleButton, AWorkspaceFXPlugin> buttonContentMap = new HashMap<>();
     private final SplitPane contentSplitPane;
     private final SPLITPANE_POSITION contentSplitPanePosition;
     private final WorkspaceFX workspaceFX;
-    private final String spacerStyle = "-fx-background-color:-color-accent-3;";
-    private final String spacerNotStyled = ""; //""-fx-background-color:black;";
     private final SIDEBAR_POSITION sidebarPos;
     private double dividerPos = .5d;
     private int indexToInsertDragAndDropButton;
     private ToggleButton hideRestoreBackup;
 
+    /**
+     * @param workspaceFX The workspace
+     * @param alignment Position where the toggle button should be placed (TOP_CENTER, BOTTOM_CENTER).
+     * @param priority Priority if the sidebar should grow (NEVER, ALWAYS)
+     * @param contentSplitPane The split pane where the content should be displayed.
+     * @param contentSplitPanePosition Position of the content in the split pane (FIRST, LAST) needed when the content is removed and added.
+     * @param sidebarPos Sidebar position (LEFT, RIGHT)
+     */
     public Sidebar(WorkspaceFX workspaceFX, Pos alignment, Priority priority, SplitPane contentSplitPane, SPLITPANE_POSITION contentSplitPanePosition, SIDEBAR_POSITION sidebarPos) {
         this.sidebarPos = sidebarPos;
         this.workspaceFX = workspaceFX;
@@ -76,6 +81,18 @@ public class Sidebar extends VBox {
         setupDragAndDrop();
     }
 
+    public ToggleGroup getToggleGroup() {
+        return toggleGroup;
+    }
+
+    public SIDEBAR_POSITION getSidebarPos() {
+        return sidebarPos;
+    }
+
+    public WorkspaceFX getWorkspaceFX() {
+        return workspaceFX;
+    }
+
     public HashMap<ToggleButton, AWorkspaceFXPlugin> getButtonContentMap() {
         return buttonContentMap;
     }
@@ -111,14 +128,14 @@ public class Sidebar extends VBox {
     }
 
     public void addButton(AWorkspaceFXPlugin plugin) {
-        ToggleButton toggleButton = createButton(plugin);
+        ToggleButton toggleButton = new SideBarButton(plugin, this);
         buttonContentMap.put(toggleButton, plugin);
         getChildren().add(toggleButton);
         getChildren().add(getSpacer());
     }
 
     public void addButton(AWorkspaceFXPlugin plugin, int index, boolean buttonSelected) {
-        ToggleButton toggleButton = createButton(plugin);
+        ToggleButton toggleButton = new SideBarButton(plugin, this);
         buttonContentMap.put(toggleButton, plugin);
         if (getChildren().size() - 1 < index) {
             getChildren().add(toggleButton);
@@ -149,40 +166,6 @@ public class Sidebar extends VBox {
         return null;
     }
 
-    private ToggleButton createButton(AWorkspaceFXPlugin plugin) {
-        ToggleButton button = new ToggleButton();
-
-        Popover popOver = new Popover();
-        popOver.setArrowSize(10);
-        double offset;
-
-        if (sidebarPos.equals(SIDEBAR_POSITION.RIGHT)) {
-            popOver.setArrowLocation(Popover.ArrowLocation.RIGHT_CENTER);
-            offset = -10;
-        } else {
-            offset = -5;
-        }
-
-        Label label = new Label(plugin.getShortDescription());
-        label.setFont(Font.font("Monospaced", 11));
-
-        StackPane content = new StackPane(label);
-        plugin.shortDescriptionProperty().addListener((obs, ov, nv) -> label.setText(nv));
-        content.setPadding(new Insets(5));
-        popOver.setContentNode(content);
-        popOver.setArrowSize(0);
-        button.setOnMouseEntered(event -> popOver.show(button, offset));
-        button.setOnMouseExited(event -> popOver.hide());
-        setupDragAndDropSource(button);
-        setupDragAndDropTarget(button);
-        button.setMinWidth(28);
-        button.setMinHeight(28);
-        button.setGraphic(plugin.getButtonGraphic());
-        toggleGroup.getToggles().add(button);
-        button.selectedProperty().addListener((obs, ov, nv) -> plugin.setPluginSelected(nv));
-        return button;
-    }
-
     private StackPane getSpacer() {
         StackPane spacer = new StackPane();
         spacer.setStyle(spacerNotStyled);
@@ -190,7 +173,7 @@ public class Sidebar extends VBox {
         return spacer;
     }
 
-    private void insertDraggedButton(DragEvent event) {
+    public void insertDraggedButton(DragEvent event) {
         event.setDropCompleted(workspaceFX.getDragAndDropButton() != null && workspaceFX.getDragAndDropPlugin() != null);
         boolean buttonActive = workspaceFX.getDragAndDropButton().isSelected();
         workspaceFX.getDragAndDropSidebar().removeButton(workspaceFX.getDragAndDropButton());
@@ -198,7 +181,7 @@ public class Sidebar extends VBox {
         event.consume();
     }
 
-    private void removeStyleFromAllSpacer() {
+    public void removeStyleFromAllSpacer() {
         for (Node n : getChildren()) {
             if (n instanceof StackPane sp) {
                 sp.setStyle(spacerNotStyled);
@@ -206,7 +189,7 @@ public class Sidebar extends VBox {
         }
     }
 
-    private void setupDragAndDropTarget(ToggleButton button) {
+    void setupDragAndDropTarget(ToggleButton button) {
         // Target button
         button.setOnDragOver(event -> {
             removeStyleFromAllSpacer();
@@ -254,7 +237,7 @@ public class Sidebar extends VBox {
         setOnDragDropped(this::insertDraggedButton);
     }
 
-    private void setupDragAndDropSource(ToggleButton button) {
+    void setupDragAndDropSource(ToggleButton button) {
         // Source button
         button.setOnDragDetected(event -> {
             // When the drag is started set the button and sidebar in the workspace

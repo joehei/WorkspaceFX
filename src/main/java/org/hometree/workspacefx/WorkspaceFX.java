@@ -15,17 +15,14 @@ import org.hometree.workspacefx.plugin.AWorkspaceFXPlugin;
 import org.hometree.workspacefx.sidebar.Sidebar;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.hometree.workspacefx.WorkspaceFX.WORKSPACE_POSITION.*;
+
 public class WorkspaceFX extends HBox {
 
-    private final Sidebar leftTop;
-    private final Sidebar leftBottom;
-    private final Sidebar bottomLeft;
-    private final Sidebar rightTop;
-    private final Sidebar rightBottom;
-    private final Sidebar bottomRight;
     private final List<AWorkspaceFXPlugin> plugins = new ArrayList<>();
     private final SplitPane mainTopLeft = new SplitPane();
     private final SplitPane mainTopRight = new SplitPane();
@@ -33,6 +30,7 @@ public class WorkspaceFX extends HBox {
     private final SplitPane mainBottom = new SplitPane();
     private final SplitPane main = new SplitPane();
     private final StackPane mainContentPane;
+    private final Map<WORKSPACE_POSITION, Sidebar> sidebarMap = new HashMap<>();
     private double mainDividerBackup = .7d;
     private double mainTopDividerBackupLeft = .3d;
     private double mainTopDividerBackupRight = .7d;
@@ -40,53 +38,21 @@ public class WorkspaceFX extends HBox {
     private Sidebar dragAndDropSidebar;
     private AWorkspaceFXPlugin dragAndDropPlugin;
     private Node content;
-
-    private boolean findPlugin(Sidebar s, AWorkspaceFXPlugin plugin) {
-        for (Map.Entry<ToggleButton, AWorkspaceFXPlugin> entry : s.getButtonContentMap().entrySet()) {
-            if (entry.getValue().equals(plugin)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public Sidebar getSidebar(AWorkspaceFXPlugin plugin) {
-        Sidebar result;
-        if (findPlugin(leftTop, plugin)) {
-            return leftTop;
-        }
-        if (findPlugin(leftBottom, plugin)) {
-            return leftBottom;
-        }
-        if (findPlugin(bottomLeft, plugin)) {
-            return bottomLeft;
-        }
-
-        if (findPlugin(rightTop, plugin)) {
-            return rightTop;
-        }
-        if (findPlugin(rightBottom, plugin)) {
-            return rightBottom;
-        }
-        if (findPlugin(bottomRight, plugin)) {
-            return bottomRight;
-        }
-        return null;
-    }
-
+    private boolean isHiding = false;
     public WorkspaceFX() {
-        leftTop = new Sidebar(this, Pos.TOP_CENTER, Priority.NEVER, mainTopLeft, Sidebar.SPLITPANE_POSITION.FIRST, Sidebar.SIDEBAR_POSITION.LEFT);
-        leftBottom = new Sidebar(this, Pos.TOP_CENTER, Priority.ALWAYS, mainTopLeft, Sidebar.SPLITPANE_POSITION.LAST, Sidebar.SIDEBAR_POSITION.LEFT);
+        sidebarMap.put(LEFT_TOP, new Sidebar(this, Pos.TOP_CENTER, Priority.NEVER, mainTopLeft, Sidebar.SPLITPANE_POSITION.FIRST, Sidebar.SIDEBAR_POSITION.LEFT));
+        sidebarMap.put(LEFT_BOTTOM, new Sidebar(this, Pos.TOP_CENTER, Priority.ALWAYS, mainTopLeft, Sidebar.SPLITPANE_POSITION.LAST, Sidebar.SIDEBAR_POSITION.LEFT));
+        // TODO : Add special button to show all active plugins
 
-        rightTop = new Sidebar(this, Pos.TOP_CENTER, Priority.NEVER, mainTopRight, Sidebar.SPLITPANE_POSITION.FIRST, Sidebar.SIDEBAR_POSITION.RIGHT);
-        rightBottom = new Sidebar(this, Pos.TOP_CENTER, Priority.ALWAYS, mainTopRight, Sidebar.SPLITPANE_POSITION.LAST, Sidebar.SIDEBAR_POSITION.RIGHT);
+        sidebarMap.put(BOTTOM_LEFT, new Sidebar(this, Pos.BOTTOM_CENTER, Priority.ALWAYS, mainBottom, Sidebar.SPLITPANE_POSITION.FIRST, Sidebar.SIDEBAR_POSITION.LEFT));
 
-        bottomLeft = new Sidebar(this, Pos.BOTTOM_CENTER, Priority.ALWAYS, mainBottom, Sidebar.SPLITPANE_POSITION.FIRST, Sidebar.SIDEBAR_POSITION.LEFT);
-        bottomRight = new Sidebar(this, Pos.BOTTOM_CENTER, Priority.ALWAYS, mainBottom, Sidebar.SPLITPANE_POSITION.LAST, Sidebar.SIDEBAR_POSITION.RIGHT);
+        sidebarMap.put(RIGHT_TOP, new Sidebar(this, Pos.TOP_CENTER, Priority.NEVER, mainTopRight, Sidebar.SPLITPANE_POSITION.FIRST, Sidebar.SIDEBAR_POSITION.RIGHT));
+        sidebarMap.put(RIGHT_BOTTOM, new Sidebar(this, Pos.TOP_CENTER, Priority.ALWAYS, mainTopRight, Sidebar.SPLITPANE_POSITION.LAST, Sidebar.SIDEBAR_POSITION.RIGHT));
+        sidebarMap.put(BOTTOM_RIGHT, new Sidebar(this, Pos.BOTTOM_CENTER, Priority.ALWAYS, mainBottom, Sidebar.SPLITPANE_POSITION.LAST, Sidebar.SIDEBAR_POSITION.RIGHT));
 
         VBox sidebarLeft = new VBox();
 
-        sidebarLeft.getChildren().addAll(leftTop, new Separator(), leftBottom, bottomLeft);
+        sidebarLeft.getChildren().addAll(sidebarMap.get(LEFT_TOP), new Separator(), sidebarMap.get(LEFT_BOTTOM), sidebarMap.get(BOTTOM_LEFT));
 
         mainContentPane = new StackPane();
 
@@ -139,12 +105,53 @@ public class WorkspaceFX extends HBox {
         setHgrow(main, Priority.ALWAYS);
 
         VBox sidebarRight = new VBox();
-        sidebarRight.getChildren().addAll(rightTop, new Separator(), rightBottom, bottomRight);
+        sidebarRight.getChildren().addAll(sidebarMap.get(RIGHT_TOP), new Separator(), sidebarMap.get(RIGHT_BOTTOM), sidebarMap.get(BOTTOM_RIGHT));
         getChildren().addAll(sidebarLeft, main, sidebarRight);
+    }
+
+    public Map<WORKSPACE_POSITION, Sidebar> getSidebarMap() {
+        return sidebarMap;
+    }
+
+    private boolean findPlugin(Sidebar s, AWorkspaceFXPlugin plugin) {
+        for (Map.Entry<ToggleButton, AWorkspaceFXPlugin> entry : s.getButtonContentMap().entrySet()) {
+            if (entry.getValue().equals(plugin)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Sidebar getSidebar(AWorkspaceFXPlugin plugin) {
+        if (findPlugin(sidebarMap.get(LEFT_TOP), plugin)) {
+            return sidebarMap.get(LEFT_TOP);
+        }
+        if (findPlugin(sidebarMap.get(LEFT_BOTTOM), plugin)) {
+            return sidebarMap.get(LEFT_BOTTOM);
+        }
+        if (findPlugin(sidebarMap.get(BOTTOM_LEFT), plugin)) {
+            return sidebarMap.get(BOTTOM_LEFT);
+        }
+
+        if (findPlugin(sidebarMap.get(RIGHT_TOP), plugin)) {
+            return sidebarMap.get(RIGHT_TOP);
+        }
+        if (findPlugin(sidebarMap.get(RIGHT_BOTTOM), plugin)) {
+            return sidebarMap.get(RIGHT_BOTTOM);
+        }
+        if (findPlugin(sidebarMap.get(BOTTOM_RIGHT), plugin)) {
+            return sidebarMap.get(BOTTOM_RIGHT);
+        }
+        return null;
     }
 
     public Node getContent() {
         return content;
+    }
+
+    public void setContent(Node content) {
+        this.content = content;
+        mainContentPane.getChildren().setAll(content);
     }
 
     public boolean isHiding() {
@@ -155,30 +162,23 @@ public class WorkspaceFX extends HBox {
         isHiding = hiding;
     }
 
-    private boolean isHiding = false;
-
-    public void setContent(Node content) {
-        this.content = content;
-        mainContentPane.getChildren().setAll(content);
-    }
-
     public void hide() {
-        leftTop.hide();
-        leftBottom.hide();
-        rightTop.hide();
-        rightBottom.hide();
-        bottomLeft.hide();
-        bottomRight.hide();
+        sidebarMap.get(LEFT_TOP).hide();
+        sidebarMap.get(LEFT_BOTTOM).hide();
+        sidebarMap.get(RIGHT_TOP).hide();
+        sidebarMap.get(RIGHT_BOTTOM).hide();
+        sidebarMap.get(BOTTOM_LEFT).hide();
+        sidebarMap.get(BOTTOM_RIGHT).hide();
         isHiding = true;
     }
 
     public void restore() {
-        leftTop.restore();
-        leftBottom.restore();
-        rightTop.restore();
-        rightBottom.restore();
-        bottomLeft.restore();
-        bottomRight.restore();
+        sidebarMap.get(LEFT_TOP).restore();
+        sidebarMap.get(LEFT_BOTTOM).restore();
+        sidebarMap.get(RIGHT_TOP).restore();
+        sidebarMap.get(RIGHT_BOTTOM).restore();
+        sidebarMap.get(BOTTOM_LEFT).restore();
+        sidebarMap.get(BOTTOM_RIGHT).restore();
         isHiding = false;
     }
 
@@ -251,18 +251,27 @@ public class WorkspaceFX extends HBox {
     public void addPlugin(AWorkspaceFXPlugin plugin, WORKSPACE_POSITION pos) {
         plugins.add(plugin);
         switch (pos) {
-            case LEFT_TOP -> leftTop.addButton(plugin);
-            case LEFT_BOTTOM -> leftBottom.addButton(plugin);
-            case BOTTOM_LEFT -> bottomLeft.addButton(plugin);
-            case RIGHT_TOP -> rightTop.addButton(plugin);
-            case RIGHT_BOTTOM -> rightBottom.addButton(plugin);
-            case BOTTOM_RIGHT -> bottomRight.addButton(plugin);
+            case LEFT_TOP -> sidebarMap.get(LEFT_TOP).addButton(plugin);
+            case LEFT_BOTTOM -> sidebarMap.get(LEFT_BOTTOM).addButton(plugin);
+            case BOTTOM_LEFT -> sidebarMap.get(BOTTOM_LEFT).addButton(plugin);
+            case RIGHT_TOP -> sidebarMap.get(RIGHT_TOP).addButton(plugin);
+            case RIGHT_BOTTOM -> sidebarMap.get(RIGHT_BOTTOM).addButton(plugin);
+            case BOTTOM_RIGHT -> sidebarMap.get(BOTTOM_RIGHT).addButton(plugin);
         }
     }
 
     public void addPlugin(AWorkspaceFXPlugin plugin, WORKSPACE_POSITION pos, boolean selected) {
         addPlugin(plugin, pos);
         getSidebar(plugin).getButton(plugin).setSelected(selected);
+    }
+
+    public WORKSPACE_POSITION getWorkspacePosition(Sidebar sidebar) {
+        for (Map.Entry<WORKSPACE_POSITION, Sidebar> entry : sidebarMap.entrySet()) {
+            if (entry.getValue().equals(sidebar)) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 
     public enum WORKSPACE_POSITION {LEFT_TOP, LEFT_BOTTOM, BOTTOM_LEFT, RIGHT_TOP, RIGHT_BOTTOM, BOTTOM_RIGHT}
