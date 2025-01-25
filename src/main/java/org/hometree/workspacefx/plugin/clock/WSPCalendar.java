@@ -25,10 +25,10 @@ public class WSPCalendar extends AWorkspaceFXPlugin {
         var cal = new Calendar(LocalDate.now());
         cal.setTopNode(new WSPCalendarClock());
         cal.setShowWeekNumbers(true);
-        VBox vBox= new VBox(cal);
+        VBox vBox = new VBox(cal);
         vBox.setAlignment(Pos.TOP_CENTER);
 
-        ScrollPane scrollPane=new ScrollPane(vBox);
+        ScrollPane scrollPane = new ScrollPane(vBox);
         scrollPane.setFitToWidth(true);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         setContent(scrollPane);

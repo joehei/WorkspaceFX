@@ -6,7 +6,7 @@
     </Properties>
     <Appenders>
         <Console name="console" target="SYSTEM_OUT">
-            <PatternLayout pattern="[%highlight{%-5level}] %d{DEFAULT} %c{1}.%M() - %msg%n%throwable{short.lineNumber}" />
+            <PatternLayout pattern="%style{%date{DEFAULT}}{yellow} [%t] %highlight{%-5level}{FATAL=bg_red, ERROR=red, WARN=yellow, INFO=green} %logger{36} - %message\n"/>
         </Console>
         <RollingFile name="rollingFile" fileName="${logPath}/${rollingFileName}.log" filePattern="${logPath}/${rollingFileName}_%d{yyyy-MM-dd}.log">
             <PatternLayout pattern="[%highlight{%-5level}] %d{DEFAULT} %c{1}.%M() - %msg%n%throwable{short.lineNumber}" />

@@ -23,6 +23,7 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class WSPFXProperty extends AWorkspaceFXPlugin implements Initializable {
+
     private static final Logger log = LoggerFactory.getLogger(WSPFXProperty.class);
 
     @FXML
@@ -47,7 +48,7 @@ public class WSPFXProperty extends AWorkspaceFXPlugin implements Initializable {
         setShortDescription("JavaFX Property generator");
 
         try {
-            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(WSPFXProperty.class.getResource(WSPFXProperty.class.getSimpleName() + ".fxml")));
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource(getClass().getSimpleName() + ".fxml")));
             loader.setController(this);
             setContent(loader.load());
         } catch (Exception e) {
@@ -127,7 +128,6 @@ public class WSPFXProperty extends AWorkspaceFXPlugin implements Initializable {
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
-
 
         tfVarName.textProperty().addListener((arg01, arg11, arg2) -> updateTextField());
         ObservableList<String> variableTypeList = FXCollections.observableArrayList("StringProperty",

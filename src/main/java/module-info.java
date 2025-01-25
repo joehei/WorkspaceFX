@@ -14,6 +14,7 @@ module org.hometree.workspacefx {
     opens org.hometree.workspacefx.plugin.fxproperty to javafx.fxml;
     opens org.hometree.workspacefx.plugin.general to javafx.fxml;
     opens org.hometree.workspacefx.plugin.logging to javafx.fxml, javafx.base;
+    opens org.hometree.workspacefx.plugin.notification to javafx.fxml;
 
     exports org.hometree.workspacefx.plugin.clock;
     exports org.hometree.workspacefx.plugin.fxproperty;

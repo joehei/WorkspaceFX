@@ -18,6 +18,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.spi.StandardLevel;
 import org.hometree.workspacefx.plugin.AWorkspaceFXPlugin;
+import org.hometree.workspacefx.utils.WorkspaceFXUtils;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.*;
@@ -164,15 +165,10 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
         return messages;
     }
 
-    private FontIcon getIcon(Ikon code, String color) {
-        FontIcon icon = new FontIcon(code);
-        Styles.appendStyle(icon, "-fx-fill", color);
-        Styles.appendStyle(icon, "-fx-icon-color", color);
-        return icon;
-    }
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        // TODO : Add detail log view
+
         Styles.addStyleClass(table, Styles.DENSE);
         Styles.addStyleClass(table, Styles.BORDERED);
         initSearch();
@@ -200,13 +196,13 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
                         if (level == null) {
                             setGraphic(null);
                         } else if (level.intLevel() == StandardLevel.INFO.intLevel()) {
-                            setGraphic(getIcon(MaterialDesignI.INFORMATION, "#00e007"));
+                            setGraphic(WorkspaceFXUtils.infoIcon());
                         } else if (level.intLevel() == StandardLevel.WARN.intLevel()) {
-                            setGraphic(getIcon(MaterialDesignA.ALERT, "#d9ed00"));
+                            setGraphic(WorkspaceFXUtils.warnIcon());
                         } else if (level.intLevel() == StandardLevel.ERROR.intLevel()) {
-                            setGraphic(getIcon(MaterialDesignA.ALERT_OCTAGON, "#ff7b7b"));
+                            setGraphic(WorkspaceFXUtils.errorIcon());
                         } else if (level.intLevel() == StandardLevel.DEBUG.intLevel()) {
-                            setGraphic(getIcon(MaterialDesignT.TEXT_BOX_SEARCH_OUTLINE, "lightgray"));
+                            setGraphic(WorkspaceFXUtils.debugIcon());
                         } else {
                             setGraphic(null);
                         }

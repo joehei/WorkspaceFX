@@ -17,6 +17,7 @@ import org.hometree.workspacefx.plugin.general.WSPButton;
 import org.hometree.workspacefx.plugin.general.WSPLabel;
 import org.hometree.workspacefx.plugin.logging.WSPLog4j2;
 import org.hometree.workspacefx.plugin.logging.WSPLog4j2Utils;
+import org.hometree.workspacefx.plugin.notification.WSPNotifications;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignB;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
@@ -36,7 +37,7 @@ public class WorkspaceFXDemo extends Application {
     @Override
     public void start(Stage stage) {
 
-        Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
+        Application.setUserAgentStylesheet(new NordLight().getUserAgentStylesheet());
         WorkspaceFX ws = new WorkspaceFX();
 
         ws.addPlugin(new WSPDigitalClock(), WorkspaceFX.WORKSPACE_POSITION.LEFT_TOP, true);
@@ -63,8 +64,8 @@ public class WorkspaceFXDemo extends Application {
         ws.addPlugin(new WSPFXProperty(), WorkspaceFX.WORKSPACE_POSITION.RIGHT_TOP);
         ws.addPlugin(new WSPCalendar(), WorkspaceFX.WORKSPACE_POSITION.RIGHT_TOP, true);
 
-        ws.addPlugin(new WSPLabel(MaterialDesignB.BELL, "right bottom 1"), WorkspaceFX.WORKSPACE_POSITION.RIGHT_BOTTOM);
-        ws.addPlugin(new WSPLabel(MaterialDesignB.BELL, "right bottom 2"), WorkspaceFX.WORKSPACE_POSITION.RIGHT_BOTTOM);
+        ws.addPlugin(new WSPNotifications(), WorkspaceFX.WORKSPACE_POSITION.RIGHT_BOTTOM);
+//        ws.addPlugin(new WSPLabel(MaterialDesignB.BELL, "right bottom 2"), WorkspaceFX.WORKSPACE_POSITION.RIGHT_BOTTOM);
 
         ws.addPlugin(new WSPLabel(MaterialDesignW.WEATHER_SUNNY, "bottom right 1"), WorkspaceFX.WORKSPACE_POSITION.BOTTOM_RIGHT);
         ws.addPlugin(new WSPLabel(MaterialDesignW.WEATHER_SUNNY, "bottom right 2"), WorkspaceFX.WORKSPACE_POSITION.BOTTOM_RIGHT);
