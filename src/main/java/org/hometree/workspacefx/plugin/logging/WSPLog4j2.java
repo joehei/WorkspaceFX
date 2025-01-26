@@ -19,7 +19,6 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.spi.StandardLevel;
 import org.hometree.workspacefx.plugin.AWorkspaceFXPlugin;
 import org.hometree.workspacefx.utils.WorkspaceFXUtils;
-import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.*;
 import org.slf4j.Logger;
@@ -196,7 +195,7 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
                         if (level == null) {
                             setGraphic(null);
                         } else if (level.intLevel() == StandardLevel.INFO.intLevel()) {
-                            setGraphic(WorkspaceFXUtils.infoIcon());
+                            setGraphic(WorkspaceFXUtils.successIcon());
                         } else if (level.intLevel() == StandardLevel.WARN.intLevel()) {
                             setGraphic(WorkspaceFXUtils.warnIcon());
                         } else if (level.intLevel() == StandardLevel.ERROR.intLevel()) {
@@ -263,7 +262,6 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
                         d++;
                     }
                 }
-
 
                 if (scrollToEnd.isSelected() &&
                         !table.getItems().isEmpty() &&

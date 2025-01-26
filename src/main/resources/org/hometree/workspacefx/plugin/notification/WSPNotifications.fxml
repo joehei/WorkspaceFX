@@ -17,9 +17,13 @@
       <Region HBox.hgrow="ALWAYS" />
       <Button fx:id="clearAll" mnemonicParsing="false" text="Clear all" />
    </HBox>
-   <ScrollPane hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0">
+   <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
       <content>
-         <VBox fx:id="cardBox" maxWidth="-Infinity" />
+         <VBox fx:id="cardBox" spacing="5.0">
+            <padding>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </padding>
+         </VBox>
       </content>
    </ScrollPane>
 </VBox>

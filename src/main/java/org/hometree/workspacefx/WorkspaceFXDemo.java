@@ -1,8 +1,6 @@
 package org.hometree.workspacefx;
 
-import atlantafx.base.theme.NordDark;
-import atlantafx.base.theme.NordLight;
-import atlantafx.base.theme.Styles;
+import atlantafx.base.theme.*;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -37,7 +35,7 @@ public class WorkspaceFXDemo extends Application {
     @Override
     public void start(Stage stage) {
 
-        Application.setUserAgentStylesheet(new NordLight().getUserAgentStylesheet());
+        Application.setUserAgentStylesheet(new CupertinoLight().getUserAgentStylesheet());
         WorkspaceFX ws = new WorkspaceFX();
 
         ws.addPlugin(new WSPDigitalClock(), WorkspaceFX.WORKSPACE_POSITION.LEFT_TOP, true);

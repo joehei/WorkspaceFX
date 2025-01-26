@@ -1,11 +1,10 @@
 package org.hometree.workspacefx.utils;
 
 import atlantafx.base.theme.Styles;
-import org.apache.logging.log4j.spi.StandardLevel;
-import org.hometree.workspacefx.plugin.logging.WSPLog4j2Utils;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignA;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignI;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignT;
 
@@ -32,11 +31,20 @@ public class WorkspaceFXUtils {
     }
 
     public static FontIcon infoIcon() {
-        return getIcon(MaterialDesignI.INFORMATION, "#00e007");
+        FontIcon icon = new FontIcon(MaterialDesignI.INFORMATION);
+        icon.getStyleClass().add(Styles.ACCENT);
+        return icon;
+    }
+
+    public static FontIcon successIcon() {
+        return getIcon(MaterialDesignC.CHECK_CIRCLE, "#00e007");
     }
 
     public static FontIcon warnIcon() {
-        return getIcon(MaterialDesignA.ALERT, "#d9ed00");
+        FontIcon icon = new FontIcon(MaterialDesignA.ALERT);
+        icon.getStyleClass().add(Styles.WARNING);
+        return icon;
+//        return getIcon(MaterialDesignA.ALERT, "#d9ed00");
     }
 
     public static FontIcon errorIcon() {
