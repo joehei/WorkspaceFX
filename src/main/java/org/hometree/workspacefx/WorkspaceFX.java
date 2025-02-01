@@ -39,6 +39,7 @@ public class WorkspaceFX extends HBox {
     private AWorkspaceFXPlugin dragAndDropPlugin;
     private Node content;
     private boolean isHiding = false;
+
     public WorkspaceFX() {
         sidebarMap.put(LEFT_TOP, new Sidebar(this, Pos.TOP_CENTER, Priority.NEVER, mainTopLeft, Sidebar.SPLITPANE_POSITION.FIRST, Sidebar.SIDEBAR_POSITION.LEFT));
         sidebarMap.put(LEFT_BOTTOM, new Sidebar(this, Pos.TOP_CENTER, Priority.ALWAYS, mainTopLeft, Sidebar.SPLITPANE_POSITION.LAST, Sidebar.SIDEBAR_POSITION.LEFT));

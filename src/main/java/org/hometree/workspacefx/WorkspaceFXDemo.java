@@ -16,7 +16,6 @@ import org.hometree.workspacefx.plugin.general.WSPLabel;
 import org.hometree.workspacefx.plugin.logging.WSPLog4j2;
 import org.hometree.workspacefx.plugin.logging.WSPLog4j2Utils;
 import org.hometree.workspacefx.plugin.notification.WSPNotifications;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignB;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignW;
@@ -31,6 +30,8 @@ public class WorkspaceFXDemo extends Application {
         Configurator.initialize(null, "log4j2.xml");
         launch();
     }
+
+    public static WSPNotifications wspNotifications;
 
     @Override
     public void start(Stage stage) {
@@ -49,7 +50,16 @@ public class WorkspaceFXDemo extends Application {
             log.error("error", new Exception("test"));
             log.debug("debug");
         });
-        ws.addPlugin(logInfo, WorkspaceFX.WORKSPACE_POSITION.LEFT_BOTTOM, true);
+        ws.addPlugin(logInfo, WorkspaceFX.WORKSPACE_POSITION.LEFT_BOTTOM, false);
+        WSPButton notificationTest = new WSPButton("Notification test test", MaterialDesignC.CHAT_OUTLINE, "Log info text button.");
+        notificationTest.getButton().setOnAction(event -> {
+            wspNotifications.success("Success Title", "Description");
+            wspNotifications.warning("Warning Title", "Description");
+            wspNotifications.danger("Danger Title", "Description");
+            wspNotifications.info("Info Title", "Description");
+        });
+        ws.addPlugin(notificationTest, WorkspaceFX.WORKSPACE_POSITION.LEFT_BOTTOM, true);
+
 
         ws.addPlugin(new WSPLabel(MaterialDesignF.FILE_TREE, "left bottom 2"), WorkspaceFX.WORKSPACE_POSITION.LEFT_BOTTOM);
 
@@ -62,7 +72,8 @@ public class WorkspaceFXDemo extends Application {
         ws.addPlugin(new WSPFXProperty(), WorkspaceFX.WORKSPACE_POSITION.RIGHT_TOP);
         ws.addPlugin(new WSPCalendar(), WorkspaceFX.WORKSPACE_POSITION.RIGHT_TOP, true);
 
-        ws.addPlugin(new WSPNotifications(), WorkspaceFX.WORKSPACE_POSITION.RIGHT_BOTTOM);
+        wspNotifications = new WSPNotifications();
+        ws.addPlugin(wspNotifications, WorkspaceFX.WORKSPACE_POSITION.RIGHT_BOTTOM, true);
 //        ws.addPlugin(new WSPLabel(MaterialDesignB.BELL, "right bottom 2"), WorkspaceFX.WORKSPACE_POSITION.RIGHT_BOTTOM);
 
         ws.addPlugin(new WSPLabel(MaterialDesignW.WEATHER_SUNNY, "bottom right 1"), WorkspaceFX.WORKSPACE_POSITION.BOTTOM_RIGHT);
