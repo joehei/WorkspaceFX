@@ -26,23 +26,51 @@ public class WorkspaceFXDemo extends Application {
 
     private static final Logger log = LoggerFactory.getLogger(WorkspaceFXDemo.class);
 
+    public static WSPNotifications wspNotifications;
+
     public static void main(String[] args) {
         Configurator.initialize(null, "log4j2.xml");
         launch();
     }
 
-    public static WSPNotifications wspNotifications;
+    private static void mainContent(WorkspaceFX ws) {
+        Label mainContent = new Label("Double click me for hide and restore");
+        mainContent.setOnMouseClicked(event -> {
+            if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
+                if (ws.isHiding()) {
+                    ws.restore();
+                } else {
+                    ws.hide();
+                }
+            }
+        });
+        ws.setContent(mainContent);
+    }
 
-    @Override
-    public void start(Stage stage) {
+    private static void bottomRight(WorkspaceFX ws) {
+        ws.addPlugin(new WSPLabel(MaterialDesignW.WEATHER_SUNNY, "bottom right 1"), WorkspaceFX.WORKSPACE_POSITION.BOTTOM_RIGHT);
+        ws.addPlugin(new WSPLabel(MaterialDesignW.WEATHER_SUNNY, "bottom right 2"), WorkspaceFX.WORKSPACE_POSITION.BOTTOM_RIGHT);
+    }
 
-        Application.setUserAgentStylesheet(new CupertinoLight().getUserAgentStylesheet());
-        WorkspaceFX ws = new WorkspaceFX();
+    private static void rightBottom(WorkspaceFX ws) {
+        wspNotifications = new WSPNotifications();
+        ws.addPlugin(wspNotifications, WorkspaceFX.WORKSPACE_POSITION.RIGHT_BOTTOM, true);
+//        ws.addPlugin(new WSPLabel(MaterialDesignB.BELL, "right bottom 2"), WorkspaceFX.WORKSPACE_POSITION.RIGHT_BOTTOM);
+    }
 
-        ws.addPlugin(new WSPDigitalClock(), WorkspaceFX.WORKSPACE_POSITION.LEFT_TOP, true);
-        ws.addPlugin(new WSPAnalogClock(), WorkspaceFX.WORKSPACE_POSITION.LEFT_TOP, true);
-        ws.addPlugin(new WSPLabel(MaterialDesignF.FILE_TREE, "left top 2"), WorkspaceFX.WORKSPACE_POSITION.LEFT_TOP);
+    private static void rightTop(WorkspaceFX ws) {
+        ws.addPlugin(new WSPFXProperty(), WorkspaceFX.WORKSPACE_POSITION.RIGHT_TOP);
+        ws.addPlugin(new WSPCalendar(), WorkspaceFX.WORKSPACE_POSITION.RIGHT_TOP, true);
+    }
 
+    private static void bottomLeft(WorkspaceFX ws) {
+        ws.addPlugin(new WSPLabel(MaterialDesignF.FILE_TREE, "bottom left 1"), WorkspaceFX.WORKSPACE_POSITION.BOTTOM_LEFT);
+        WSPLog4j2 loggingControl = new WSPLog4j2();
+        WSPLog4j2Utils.addAppender(loggingControl);
+        ws.addPlugin(loggingControl, WorkspaceFX.WORKSPACE_POSITION.BOTTOM_LEFT, true);
+    }
+
+    private static void leftBottom(WorkspaceFX ws) {
         WSPButton logInfo = new WSPButton("Logger test", MaterialDesignC.CHAT_OUTLINE, "Log info text button.");
         logInfo.getButton().setOnAction(event -> {
             log.info("info");
@@ -59,37 +87,28 @@ public class WorkspaceFXDemo extends Application {
             wspNotifications.info("Info Title", "Description");
         });
         ws.addPlugin(notificationTest, WorkspaceFX.WORKSPACE_POSITION.LEFT_BOTTOM, true);
-
-
         ws.addPlugin(new WSPLabel(MaterialDesignF.FILE_TREE, "left bottom 2"), WorkspaceFX.WORKSPACE_POSITION.LEFT_BOTTOM);
+    }
 
-        ws.addPlugin(new WSPLabel(MaterialDesignF.FILE_TREE, "bottom left 1"), WorkspaceFX.WORKSPACE_POSITION.BOTTOM_LEFT);
-        WSPLog4j2 loggingControl = new WSPLog4j2();
-        WSPLog4j2Utils.addAppender(loggingControl);
-        ws.addPlugin(loggingControl, WorkspaceFX.WORKSPACE_POSITION.BOTTOM_LEFT, true);
+    private static void leftTop(WorkspaceFX ws) {
+        ws.addPlugin(new WSPDigitalClock(), WorkspaceFX.WORKSPACE_POSITION.LEFT_TOP, true);
+        ws.addPlugin(new WSPAnalogClock(), WorkspaceFX.WORKSPACE_POSITION.LEFT_TOP, true);
+        ws.addPlugin(new WSPLabel(MaterialDesignF.FILE_TREE, "left top 2"), WorkspaceFX.WORKSPACE_POSITION.LEFT_TOP);
+    }
 
+    @Override
+    public void start(Stage stage) {
 
-        ws.addPlugin(new WSPFXProperty(), WorkspaceFX.WORKSPACE_POSITION.RIGHT_TOP);
-        ws.addPlugin(new WSPCalendar(), WorkspaceFX.WORKSPACE_POSITION.RIGHT_TOP, true);
+        Application.setUserAgentStylesheet(new CupertinoLight().getUserAgentStylesheet());
+        WorkspaceFX ws = new WorkspaceFX();
 
-        wspNotifications = new WSPNotifications();
-        ws.addPlugin(wspNotifications, WorkspaceFX.WORKSPACE_POSITION.RIGHT_BOTTOM, true);
-//        ws.addPlugin(new WSPLabel(MaterialDesignB.BELL, "right bottom 2"), WorkspaceFX.WORKSPACE_POSITION.RIGHT_BOTTOM);
-
-        ws.addPlugin(new WSPLabel(MaterialDesignW.WEATHER_SUNNY, "bottom right 1"), WorkspaceFX.WORKSPACE_POSITION.BOTTOM_RIGHT);
-        ws.addPlugin(new WSPLabel(MaterialDesignW.WEATHER_SUNNY, "bottom right 2"), WorkspaceFX.WORKSPACE_POSITION.BOTTOM_RIGHT);
-
-        Label mainContent = new Label("Double click me for hide and restore");
-        mainContent.setOnMouseClicked(event -> {
-            if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
-                if (ws.isHiding()) {
-                    ws.restore();
-                } else {
-                    ws.hide();
-                }
-            }
-        });
-        ws.setContent(mainContent);
+        leftTop(ws);
+        leftBottom(ws);
+        bottomLeft(ws);
+        rightTop(ws);
+        rightBottom(ws);
+        bottomRight(ws);
+        mainContent(ws);
 
         Scene scene = new Scene(ws, 1400, 1000);
         stage.setScene(scene);
@@ -97,4 +116,5 @@ public class WorkspaceFXDemo extends Application {
         stage.setOnCloseRequest(event -> System.exit(0));
         stage.show();
     }
+
 }
