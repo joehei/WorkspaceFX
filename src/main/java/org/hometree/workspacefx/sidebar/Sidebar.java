@@ -1,11 +1,15 @@
 package org.hometree.workspacefx.sidebar;
 
-import atlantafx.base.controls.Popover;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
-import javafx.scene.SnapshotParameters;
-import javafx.scene.control.*;
+import javafx.scene.Scene;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -13,10 +17,13 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 import org.hometree.workspacefx.WorkspaceFX;
 import org.hometree.workspacefx.plugin.AWorkspaceFXPlugin;
+import org.hometree.workspacefx.utils.WorkspaceFXUtils;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,12 +42,12 @@ public class Sidebar extends VBox {
     private ToggleButton hideRestoreBackup;
 
     /**
-     * @param workspaceFX The workspace
-     * @param alignment Position where the toggle button should be placed (TOP_CENTER, BOTTOM_CENTER).
-     * @param priority Priority if the sidebar should grow (NEVER, ALWAYS)
-     * @param contentSplitPane The split pane where the content should be displayed.
+     * @param workspaceFX              The workspace
+     * @param alignment                Position where the toggle button should be placed (TOP_CENTER, BOTTOM_CENTER).
+     * @param priority                 Priority if the sidebar should grow (NEVER, ALWAYS)
+     * @param contentSplitPane         The split pane where the content should be displayed.
      * @param contentSplitPanePosition Position of the content in the split pane (FIRST, LAST) needed when the content is removed and added.
-     * @param sidebarPos Sidebar position (LEFT, RIGHT)
+     * @param sidebarPos               Sidebar position (LEFT, RIGHT)
      */
     public Sidebar(WorkspaceFX workspaceFX, Pos alignment, Priority priority, SplitPane contentSplitPane, SPLITPANE_POSITION contentSplitPanePosition, SIDEBAR_POSITION sidebarPos) {
         this.sidebarPos = sidebarPos;
@@ -242,7 +249,8 @@ public class Sidebar extends VBox {
         button.setOnDragDetected(event -> {
             // When the drag is started set the button and sidebar in the workspace
             Dragboard db = button.startDragAndDrop(TransferMode.ANY);
-            db.setDragView(button.snapshot(new SnapshotParameters(), null));
+            getWorkspaceFX().setDragAndDropIcon(button.snapshot(null, null));
+            db.setDragView(getWorkspaceFX().getDragAndDropIcon());
             ClipboardContent content = new ClipboardContent();
             content.putString("WorkspaceFX_" + button.getClass().getSimpleName());
             db.setContent(content);
@@ -253,10 +261,38 @@ public class Sidebar extends VBox {
         });
         // Source button
         button.setOnDragDone(event -> {
+            // Check if the drag was dropped outside
+            Point p = MouseInfo.getPointerInfo().getLocation();
+            Point2D mouseLoc = new Point2D(p.getX(), p.getY());
+            Window window = this.getScene().getWindow();
+            Rectangle2D windowBounds = new Rectangle2D(window.getX(), window.getY(), window.getWidth(), window.getHeight());
+
+            if (!windowBounds.contains(mouseLoc)) {
+                removeButton(button);
+                Sidebar sb = getWorkspaceFX().getDragAndDropSidebar();
+                AWorkspaceFXPlugin plugin = getWorkspaceFX().getDragAndDropPlugin();
+
+                Stage newStage = new Stage();
+                Scene scene = new Scene(new StackPane(plugin.getContent()));
+                newStage.setScene(scene);
+                newStage.getIcons().add(WorkspaceFXUtils.copyImage(workspaceFX.getDragAndDropIcon()));
+                newStage.setX(event.getScreenX());
+                newStage.setY(event.getScreenY());
+                newStage.setWidth(window.getWidth());
+                newStage.setHeight(window.getHeight());
+                newStage.setTitle(plugin.getShortDescription());
+                newStage.setOnCloseRequest(ce -> {
+                    sb.addButton(plugin);
+                    sb.getButton(plugin).setSelected(true);
+                });
+                newStage.show();
+            }
+
             // When the drag operation is done remove the button and sidebar from the workspace
             workspaceFX.setDragAndDropButton(null);
             workspaceFX.setDragAndDropPlugin(null);
             workspaceFX.setDragAndDropSidebar(null);
+            workspaceFX.setDragAndDropIcon(null);
             event.consume();
         });
     }

@@ -7,6 +7,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Separator;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
@@ -37,6 +38,7 @@ public class WorkspaceFX extends HBox {
     private ToggleButton dragAndDropButton;
     private Sidebar dragAndDropSidebar;
     private AWorkspaceFXPlugin dragAndDropPlugin;
+    private Image dragAndDropIcon;
     private Node content;
     private boolean isHiding = false;
 
@@ -108,6 +110,14 @@ public class WorkspaceFX extends HBox {
         VBox sidebarRight = new VBox();
         sidebarRight.getChildren().addAll(sidebarMap.get(RIGHT_TOP), new Separator(), sidebarMap.get(RIGHT_BOTTOM), sidebarMap.get(BOTTOM_RIGHT));
         getChildren().addAll(sidebarLeft, main, sidebarRight);
+    }
+
+    public Image getDragAndDropIcon() {
+        return dragAndDropIcon;
+    }
+
+    public void setDragAndDropIcon(Image dragAndDropIcon) {
+        this.dragAndDropIcon = dragAndDropIcon;
     }
 
     public Map<WORKSPACE_POSITION, Sidebar> getSidebarMap() {
@@ -195,6 +205,9 @@ public class WorkspaceFX extends HBox {
         return dragAndDropSidebar;
     }
 
+    /**
+     * @param dragAndDropSidebar The source side bar for drag and drop
+     */
     public void setDragAndDropSidebar(Sidebar dragAndDropSidebar) {
         this.dragAndDropSidebar = dragAndDropSidebar;
     }
