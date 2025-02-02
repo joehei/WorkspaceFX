@@ -13,6 +13,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
 import javafx.util.Callback;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -32,7 +33,6 @@ import java.util.ResourceBundle;
 public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
 
     private static final Logger log = LoggerFactory.getLogger(WSPLog4j2.class);
-    private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss,SSS");
     private final ObservableList<WSPLog4j2LogMessage> messages = FXCollections.observableArrayList();
     private final FilteredList<WSPLog4j2LogMessage> filteredList = new FilteredList<>(messages);
     private final IntegerProperty infoCounter = new SimpleIntegerProperty();
@@ -76,6 +76,10 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
     private ToggleButton scrollToEnd;
     @FXML
     private ToggleButton toggleDebugMode;
+    @FXML
+    private SplitPane tablePane;
+    private WSPLog4j2DetailView detailView;
+
 
     public WSPLog4j2() {
         super();
@@ -84,6 +88,10 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
             loader.setController(this);
             setContent(loader.load());
             setShortDescription("Logging");
+
+            detailView = new WSPLog4j2DetailView();
+            detailView.getCloseIcon().setOnMouseClicked(event -> tablePane.getItems().remove(detailView));
+
             setToggleButtonContent(MaterialDesignF.FORMAT_LIST_TEXT);
 
             // Define when a notification should be shown
@@ -166,7 +174,6 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // TODO : Add detail log view
 
         Styles.addStyleClass(table, Styles.DENSE);
         Styles.addStyleClass(table, Styles.BORDERED);
@@ -221,7 +228,7 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
                         if (empty) {
                             setText(null);
                         } else {
-                            setText(dtf.format(item));
+                            setText(WorkspaceFXUtils.dateTimeFormatter.format(item));
                         }
                     }
                 };
@@ -239,6 +246,16 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
                 }
             }
         });
+
+        table.setOnMouseClicked(event ->{
+            if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount()==2){
+                if (!tablePane.getItems().contains(detailView)){
+                    tablePane.getItems().add(detailView);
+                }
+            }
+        });
+
+        table.getSelectionModel().selectedItemProperty().addListener((obs,ov,nv)-> detailView.setLogMessage(nv));
 
         messages.addListener((ListChangeListener<WSPLog4j2LogMessage>) change -> {
             change.next();

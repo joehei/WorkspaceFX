@@ -13,6 +13,10 @@ import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignI;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignT;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.time.format.DateTimeFormatter;
+
 public class WorkspaceFXUtils {
 
     private static int defaultIconSize = 16;
@@ -81,5 +85,17 @@ public class WorkspaceFXUtils {
         }
         return writableImage;
     }
+
+    public static String exceptionToString(Throwable throwable) {
+        if (throwable==null){
+            return "";
+        }
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        throwable.printStackTrace(pw);
+        return sw.toString();
+    }
+
+    public static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss,SSS");
 
 }
