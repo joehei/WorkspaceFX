@@ -19,7 +19,8 @@ import java.time.format.DateTimeFormatter;
 
 public class WorkspaceFXUtils {
 
-    private static int defaultIconSize = 16;
+    public static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss,SSS");
+    private static int defaultIconSize = 18;
 
     private WorkspaceFXUtils() {
     }
@@ -34,6 +35,7 @@ public class WorkspaceFXUtils {
 
     public static FontIcon getIcon(Ikon code, String color) {
         FontIcon icon = new FontIcon(code);
+        Styles.appendStyle(icon, "-fx-icon-size", String.valueOf(getDefaultIconSize()));
         Styles.appendStyle(icon, "-fx-fill", color);
         Styles.appendStyle(icon, "-fx-icon-color", color);
         return icon;
@@ -52,8 +54,8 @@ public class WorkspaceFXUtils {
     public static FontIcon warnIcon() {
         FontIcon icon = new FontIcon(MaterialDesignA.ALERT);
         icon.getStyleClass().add(Styles.WARNING);
+        Styles.appendStyle(icon, "-fx-icon-size", String.valueOf(getDefaultIconSize()));
         return icon;
-//        return getIcon(MaterialDesignA.ALERT, "#d9ed00");
     }
 
     public static FontIcon errorIcon() {
@@ -87,7 +89,7 @@ public class WorkspaceFXUtils {
     }
 
     public static String exceptionToString(Throwable throwable) {
-        if (throwable==null){
+        if (throwable == null) {
             return "";
         }
         StringWriter sw = new StringWriter();
@@ -95,7 +97,5 @@ public class WorkspaceFXUtils {
         throwable.printStackTrace(pw);
         return sw.toString();
     }
-
-    public static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss,SSS");
 
 }
