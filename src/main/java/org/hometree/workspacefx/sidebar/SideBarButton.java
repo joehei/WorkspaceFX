@@ -38,6 +38,7 @@ public class SideBarButton extends ToggleButton {
 
         StackPane content = new StackPane(label);
         plugin.shortDescriptionProperty().addListener((obs, ov, nv) -> label.setText(nv));
+        plugin.statusProperty().addListener((obs, ov, nv) -> label.setText(plugin.getShortDescription() + (nv == null ? "" : "\n" + nv)));
         content.setPadding(new Insets(5));
         popOver.setContentNode(content);
         popOver.setArrowSize(0);

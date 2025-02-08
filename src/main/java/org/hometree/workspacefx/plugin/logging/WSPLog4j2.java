@@ -179,7 +179,10 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
         Styles.addStyleClass(table, Styles.BORDERED);
         initSearch();
 
-        clearAll.setOnAction(event -> messages.clear());
+        clearAll.setOnAction(event -> {
+            messages.clear();
+            setStatus(null);
+        });
         clearFilter.setOnAction(event -> {
             searchTF.setText("");
             showInfo.setSelected(true);
@@ -247,15 +250,15 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
             }
         });
 
-        table.setOnMouseClicked(event ->{
-            if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount()==2){
-                if (!tablePane.getItems().contains(detailView)){
+        table.setOnMouseClicked(event -> {
+            if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
+                if (!tablePane.getItems().contains(detailView)) {
                     tablePane.getItems().add(detailView);
                 }
             }
         });
 
-        table.getSelectionModel().selectedItemProperty().addListener((obs,ov,nv)-> detailView.setLogMessage(nv));
+        table.getSelectionModel().selectedItemProperty().addListener((obs, ov, nv) -> detailView.setLogMessage(nv));
 
         messages.addListener((ListChangeListener<WSPLog4j2LogMessage>) change -> {
             change.next();
@@ -319,8 +322,7 @@ public class WSPLog4j2 extends AWorkspaceFXPlugin implements Initializable {
 
     private void updateCounter(int value, Label label) {
         label.setText(String.format("%,d", value));
-        setShortDescription("Logging\n" +
-                "Info   : " + infoCounter.getValue() + "\n" +
+        setStatus("Info   : " + infoCounter.getValue() + "\n" +
                 "Warning: " + warnCounter.getValue() + "\n" +
                 "Error  : " + errCounter.getValue() + "\n" +
                 "Debug  : " + debugCounter.getValue());

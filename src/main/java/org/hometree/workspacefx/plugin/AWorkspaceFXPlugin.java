@@ -13,6 +13,7 @@ public abstract class AWorkspaceFXPlugin {
     private final ObjectProperty<Node> toggleButtonContent = new SimpleObjectProperty<>();
     private final StringProperty shortDescription = new SimpleStringProperty();
     private final ObjectProperty<Sidebar> sidebar = new SimpleObjectProperty<>();
+    private final StringProperty status = new SimpleStringProperty();
     private Node content;
     private NotificationGraphic notificationGraphic;
 
@@ -27,6 +28,18 @@ public abstract class AWorkspaceFXPlugin {
         this.notificationGraphic = new NotificationGraphic(getToggleButtonContent());
     }
 
+    public String getStatus() {
+        return status.getValue();
+    }
+
+    public void setStatus(String status) {
+        this.status.setValue(status);
+    }
+
+    public StringProperty statusProperty() {
+        return this.status;
+    }
+
     public Sidebar getSidebar() {
         return sidebar.getValue();
     }
@@ -35,7 +48,7 @@ public abstract class AWorkspaceFXPlugin {
         this.sidebar.setValue(sidebar);
     }
 
-    public ObjectProperty<Sidebar> sidebarProperty(){
+    public ObjectProperty<Sidebar> sidebarProperty() {
         return this.sidebar;
     }
 
