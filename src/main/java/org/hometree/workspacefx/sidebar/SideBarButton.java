@@ -53,11 +53,7 @@ public class SideBarButton extends ToggleButton {
 
         Menu moveTo = new Menu("Move to");
         MenuItem cmHide = new MenuItem("Hide");
-        cmHide.setOnAction(event -> {
-            setSelected(false);
-            setVisible(false);
-            setManaged(false);
-        });
+        cmHide.setOnAction(event -> sidebar.getWorkspaceFX().hidePlugin(plugin));
 
         SeparatorMenuItem sep = new SeparatorMenuItem();
         MenuItem cmLeftTop = new MenuItem("Left Top");

@@ -3,6 +3,7 @@ package org.hometree.workspacefx;
 import javafx.beans.InvalidationListener;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.Separator;
 import javafx.scene.control.SplitPane;
@@ -13,18 +14,17 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.hometree.workspacefx.plugin.AWorkspaceFXPlugin;
+import org.hometree.workspacefx.sidebar.HiddenPlugin;
 import org.hometree.workspacefx.sidebar.Sidebar;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.hometree.workspacefx.WorkspaceFX.WORKSPACE_POSITION.*;
 
 public class WorkspaceFX extends HBox {
 
     private final List<AWorkspaceFXPlugin> plugins = new ArrayList<>();
+    private final List<HiddenPlugin> hiddenPlugins = new ArrayList<>();
     private final SplitPane mainTopLeft = new SplitPane();
     private final SplitPane mainTopRight = new SplitPane();
     private final SplitPane mainTop = new SplitPane();
@@ -43,18 +43,21 @@ public class WorkspaceFX extends HBox {
     private boolean isHiding = false;
 
     public WorkspaceFX() {
+        // Create the sidebars and add them to the map
+        // Left
         sidebarMap.put(LEFT_TOP, new Sidebar(this, Pos.TOP_CENTER, Priority.NEVER, mainTopLeft, Sidebar.SPLITPANE_POSITION.FIRST, Sidebar.SIDEBAR_POSITION.LEFT));
         sidebarMap.put(LEFT_BOTTOM, new Sidebar(this, Pos.TOP_CENTER, Priority.ALWAYS, mainTopLeft, Sidebar.SPLITPANE_POSITION.LAST, Sidebar.SIDEBAR_POSITION.LEFT));
-        // TODO : Add special button to show all active plugins
-
         sidebarMap.put(BOTTOM_LEFT, new Sidebar(this, Pos.BOTTOM_CENTER, Priority.ALWAYS, mainBottom, Sidebar.SPLITPANE_POSITION.FIRST, Sidebar.SIDEBAR_POSITION.LEFT));
 
+        // Right
         sidebarMap.put(RIGHT_TOP, new Sidebar(this, Pos.TOP_CENTER, Priority.NEVER, mainTopRight, Sidebar.SPLITPANE_POSITION.FIRST, Sidebar.SIDEBAR_POSITION.RIGHT));
         sidebarMap.put(RIGHT_BOTTOM, new Sidebar(this, Pos.TOP_CENTER, Priority.ALWAYS, mainTopRight, Sidebar.SPLITPANE_POSITION.LAST, Sidebar.SIDEBAR_POSITION.RIGHT));
         sidebarMap.put(BOTTOM_RIGHT, new Sidebar(this, Pos.BOTTOM_CENTER, Priority.ALWAYS, mainBottom, Sidebar.SPLITPANE_POSITION.LAST, Sidebar.SIDEBAR_POSITION.RIGHT));
 
-        VBox sidebarLeft = new VBox();
+        // Add the management buttons
+        sidebarMap.get(LEFT_BOTTOM).addManagementButton(Side.LEFT, sidebarMap.get(RIGHT_BOTTOM));
 
+        VBox sidebarLeft = new VBox();
         sidebarLeft.getChildren().addAll(sidebarMap.get(LEFT_TOP), new Separator(), sidebarMap.get(LEFT_BOTTOM), sidebarMap.get(BOTTOM_LEFT));
 
         mainContentPane = new StackPane();
@@ -110,6 +113,7 @@ public class WorkspaceFX extends HBox {
         VBox sidebarRight = new VBox();
         sidebarRight.getChildren().addAll(sidebarMap.get(RIGHT_TOP), new Separator(), sidebarMap.get(RIGHT_BOTTOM), sidebarMap.get(BOTTOM_RIGHT));
         getChildren().addAll(sidebarLeft, main, sidebarRight);
+
     }
 
     public Image getDragAndDropIcon() {
@@ -277,6 +281,21 @@ public class WorkspaceFX extends HBox {
     public void addPlugin(AWorkspaceFXPlugin plugin, WORKSPACE_POSITION pos, boolean selected) {
         addPlugin(plugin, pos);
         getSidebar(plugin).getButton(plugin).setSelected(selected);
+    }
+
+    public void hidePlugin(AWorkspaceFXPlugin plugin) {
+        Sidebar sidebar = getSidebar(plugin);
+        sidebar.removeButton(sidebar.getButton(plugin));
+        hiddenPlugins.add(new HiddenPlugin(sidebar,plugin));
+    }
+
+    public void showPlugin(HiddenPlugin plugin) {
+        plugin.sidebar().addButton(plugin.plugin());
+        hiddenPlugins.remove(plugin);
+    }
+
+    public List<HiddenPlugin> getHiddenPlugins() {
+        return hiddenPlugins;
     }
 
     public WORKSPACE_POSITION getWorkspacePosition(Sidebar sidebar) {

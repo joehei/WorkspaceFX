@@ -1,19 +1,13 @@
 package org.hometree.workspacefx.sidebar;
 
+import javafx.geometry.*;
 import javafx.geometry.Insets;
-import javafx.geometry.Point2D;
-import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
-import javafx.scene.image.WritableImage;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
+import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
+import javafx.scene.input.*;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -22,6 +16,7 @@ import javafx.stage.Window;
 import org.hometree.workspacefx.WorkspaceFX;
 import org.hometree.workspacefx.plugin.AWorkspaceFXPlugin;
 import org.hometree.workspacefx.utils.WorkspaceFXUtils;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignD;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -40,6 +35,7 @@ public class Sidebar extends VBox {
     private double dividerPos = .5d;
     private int indexToInsertDragAndDropButton;
     private ToggleButton hideRestoreBackup;
+    private Button managementButton;
 
     /**
      * @param workspaceFX              The workspace
@@ -60,6 +56,7 @@ public class Sidebar extends VBox {
         setVgrow(this, priority);
         setAlignment(alignment);
         getChildren().add(getSpacer());
+        moveManagementButton();
         toggleGroup.selectedToggleProperty().addListener((obs, ov, nv) -> {
 
             // Replace the current content
@@ -86,6 +83,51 @@ public class Sidebar extends VBox {
             }
         });
         setupDragAndDrop();
+    }
+
+    private void moveManagementButton() {
+        if (managementButton != null) {
+            getChildren().remove(managementButton);
+            getChildren().add(managementButton);
+        }
+    }
+
+    public void addManagementButton(Side side, Sidebar otherSidebar) {
+        managementButton = new Button();
+        managementButton.setGraphic(WorkspaceFXUtils.getIcon(MaterialDesignD.DOTS_HORIZONTAL));
+        ContextMenu cm = new ContextMenu();
+        managementButton.setOnMouseEntered(event -> {
+            cm.getItems().clear();
+
+            MenuItem moveToOther;
+            if (side.equals(Side.LEFT)) {
+                moveToOther = new MenuItem("Move to right");
+            } else {
+                moveToOther = new MenuItem("Move to left");
+            }
+            moveToOther.setOnAction(event1 -> {
+                this.getChildren().remove(managementButton);
+                managementButton=null;
+                otherSidebar.addManagementButton(side.equals(Side.LEFT) ? Side.RIGHT : Side.LEFT, this);
+            });
+            cm.getItems().add(moveToOther);
+
+            if (!getWorkspaceFX().getHiddenPlugins().isEmpty()){
+                cm.getItems().add(new SeparatorMenuItem());
+            }
+            getWorkspaceFX().getHiddenPlugins().forEach(plugin -> {
+                MenuItem e = new MenuItem(plugin.plugin().getShortDescription());
+                e.setOnAction(ev -> getWorkspaceFX().showPlugin(plugin));
+                cm.getItems().add(e);
+            });
+        });
+        managementButton.setOnMouseClicked(event -> {
+            if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 1) {
+                cm.show(managementButton, side.equals(Side.LEFT) ? Side.RIGHT : Side.LEFT, 0, 0);
+            }
+        });
+        getChildren().add(managementButton);
+
     }
 
     public ToggleGroup getToggleGroup() {
@@ -139,6 +181,8 @@ public class Sidebar extends VBox {
         buttonContentMap.put(toggleButton, plugin);
         getChildren().add(toggleButton);
         getChildren().add(getSpacer());
+        moveManagementButton();
+        plugin.setSidebar(this);
     }
 
     public void addButton(AWorkspaceFXPlugin plugin, int index, boolean buttonSelected) {
@@ -147,15 +191,19 @@ public class Sidebar extends VBox {
         if (getChildren().size() - 1 < index) {
             getChildren().add(toggleButton);
             getChildren().add(getSpacer());
+            moveManagementButton();
         } else {
             getChildren().add(index, getSpacer());
             getChildren().add(index, toggleButton);
+            moveManagementButton();
         }
         toggleButton.setSelected(buttonSelected);
+        plugin.setSidebar(this);
     }
 
     public void removeButton(ToggleButton button) {
         button.setSelected(false);
+        buttonContentMap.get(button).setSidebar(null);
         int index = getChildren().indexOf(button);
         if (getChildren().get(index + 1) instanceof StackPane sp) {
             getChildren().remove(sp);
@@ -232,7 +280,14 @@ public class Sidebar extends VBox {
             removeStyleFromAllSpacer();
             if (event.getDragboard().hasString() && event.getDragboard().getString().startsWith("WorkspaceFX_")) {
                 event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-                if (getChildren().getLast() instanceof StackPane spacer) {
+                if (managementButton != null) {
+                    if (getChildren().get(getChildren().size() - 2) instanceof StackPane spacer) {
+                        spacer.setStyle(spacerStyle);
+                        indexToInsertDragAndDropButton = getChildren().indexOf(spacer) + 1;
+                    } else {
+                        System.out.println("Warning last element is not a spacer.");
+                    }
+                } else if (getChildren().getLast() instanceof StackPane spacer) {
                     spacer.setStyle(spacerStyle);
                     indexToInsertDragAndDropButton = getChildren().indexOf(spacer) + 1;
                 } else {

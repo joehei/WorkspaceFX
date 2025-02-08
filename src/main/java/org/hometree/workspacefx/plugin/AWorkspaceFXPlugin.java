@@ -2,6 +2,7 @@ package org.hometree.workspacefx.plugin;
 
 import javafx.beans.property.*;
 import javafx.scene.Node;
+import org.hometree.workspacefx.sidebar.Sidebar;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -11,6 +12,7 @@ public abstract class AWorkspaceFXPlugin {
     private final IntegerProperty defaultIconSize = new SimpleIntegerProperty(16);
     private final ObjectProperty<Node> toggleButtonContent = new SimpleObjectProperty<>();
     private final StringProperty shortDescription = new SimpleStringProperty();
+    private final ObjectProperty<Sidebar> sidebar = new SimpleObjectProperty<>();
     private Node content;
     private NotificationGraphic notificationGraphic;
 
@@ -23,6 +25,18 @@ public abstract class AWorkspaceFXPlugin {
         setToggleButtonContent(toggleButtonContent);
         this.content = content;
         this.notificationGraphic = new NotificationGraphic(getToggleButtonContent());
+    }
+
+    public Sidebar getSidebar() {
+        return sidebar.getValue();
+    }
+
+    public void setSidebar(Sidebar sidebar) {
+        this.sidebar.setValue(sidebar);
+    }
+
+    public ObjectProperty<Sidebar> sidebarProperty(){
+        return this.sidebar;
     }
 
     public String getShortDescription() {
@@ -82,7 +96,6 @@ public abstract class AWorkspaceFXPlugin {
     public BooleanProperty pluginSelectedProperty() {
         return this.pluginSelected;
     }
-
 
     public NotificationGraphic getButtonGraphic() {
         return notificationGraphic;

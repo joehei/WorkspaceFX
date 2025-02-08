@@ -41,6 +41,12 @@ public class WorkspaceFXUtils {
         return icon;
     }
 
+    public static FontIcon getIcon(Ikon code) {
+        FontIcon icon = new FontIcon(code);
+        Styles.appendStyle(icon, "-fx-icon-size", String.valueOf(getDefaultIconSize()));
+        return icon;
+    }
+
     public static FontIcon infoIcon() {
         FontIcon icon = new FontIcon(MaterialDesignI.INFORMATION);
         icon.getStyleClass().add(Styles.ACCENT);
