@@ -85,6 +85,9 @@ public class Sidebar extends VBox {
         setupDragAndDrop();
     }
 
+    /**
+     * Moves the management button to the bottom, is called to make sure the button is always at the bottom
+     */
     private void moveManagementButton() {
         if (managementButton != null) {
             getChildren().remove(managementButton);
@@ -92,6 +95,13 @@ public class Sidebar extends VBox {
         }
     }
 
+    /**
+     * Adds a management button to the control.
+     *
+     * @param side         The side of the control (left or right)
+     * @param otherSidebar The other sidebar where the button should be moved to when the context menu entry is used.
+     *
+     */
     public void addManagementButton(Side side, Sidebar otherSidebar) {
         managementButton = new Button();
         managementButton.setGraphic(WorkspaceFXUtils.getIcon(MaterialDesignD.DOTS_HORIZONTAL));
@@ -107,19 +117,21 @@ public class Sidebar extends VBox {
             }
             moveToOther.setOnAction(event1 -> {
                 this.getChildren().remove(managementButton);
-                managementButton=null;
+                managementButton = null;
                 otherSidebar.addManagementButton(side.equals(Side.LEFT) ? Side.RIGHT : Side.LEFT, this);
             });
-            cm.getItems().add(moveToOther);
 
-            if (!getWorkspaceFX().getHiddenPlugins().isEmpty()){
-                cm.getItems().add(new SeparatorMenuItem());
-            }
             getWorkspaceFX().getHiddenPlugins().forEach(plugin -> {
                 MenuItem e = new MenuItem(plugin.plugin().getShortDescription());
                 e.setOnAction(ev -> getWorkspaceFX().showPlugin(plugin));
                 cm.getItems().add(e);
             });
+
+            if (!getWorkspaceFX().getHiddenPlugins().isEmpty()) {
+                cm.getItems().add(new SeparatorMenuItem());
+            }
+
+            cm.getItems().add(moveToOther);
         });
         managementButton.setOnMouseClicked(event -> {
             if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 1) {
@@ -176,6 +188,12 @@ public class Sidebar extends VBox {
         }
     }
 
+    /**
+     *
+     * Adds a new button to the control for the given plugin.
+     *
+     * @param plugin the plugin
+     */
     public void addButton(AWorkspaceFXPlugin plugin) {
         ToggleButton toggleButton = new SideBarButton(plugin, this);
         buttonContentMap.put(toggleButton, plugin);
