@@ -33,8 +33,6 @@ public class WSPCalendar extends AWorkspaceFXPlugin {
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         setContent(scrollPane);
         setShortDescription("Calendar");
-        FontIcon icon = new FontIcon(MaterialDesignC.CALENDAR);
-        icon.setIconSize(16);
-        setToggleButtonContent(icon);
+        setToggleButtonContent(MaterialDesignC.CALENDAR);
     }
 }

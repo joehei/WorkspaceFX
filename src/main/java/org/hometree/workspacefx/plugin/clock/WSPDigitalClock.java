@@ -39,9 +39,7 @@ public class WSPDigitalClock extends AWorkspaceFXPlugin implements Initializable
             loader.setController(this);
             setContent(loader.load());
             setShortDescription("Digital clock");
-            FontIcon icon = new FontIcon(MaterialDesignC.CLOCK_DIGITAL);
-            icon.setIconSize(16);
-            setToggleButtonContent(icon);
+            setToggleButtonContent(MaterialDesignC.CLOCK_DIGITAL);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }

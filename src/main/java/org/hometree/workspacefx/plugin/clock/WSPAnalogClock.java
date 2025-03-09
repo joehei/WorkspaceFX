@@ -17,9 +17,7 @@ public class WSPAnalogClock extends AWorkspaceFXPlugin implements Initializable 
     public WSPAnalogClock() {
         setContent(new AnalogClockWithClockwork());
         setShortDescription("Analog clock");
-        FontIcon icon = new FontIcon(MaterialDesignC.CLOCK_OUTLINE);
-        icon.setIconSize(16);
-        setToggleButtonContent(icon);
+        setToggleButtonContent(MaterialDesignC.CLOCK_OUTLINE);
     }
 
     @Override

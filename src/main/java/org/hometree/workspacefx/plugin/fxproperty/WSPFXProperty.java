@@ -42,10 +42,8 @@ public class WSPFXProperty extends AWorkspaceFXPlugin implements Initializable {
     Button copyToClipboardLazy;
 
     public WSPFXProperty() {
-        FontIcon icon = new FontIcon(MaterialDesignS.SWAP_HORIZONTAL);
-        icon.setIconSize(16);
-        setToggleButtonContent(icon);
         setShortDescription("JavaFX Property generator");
+        setToggleButtonContent(MaterialDesignS.SWAP_HORIZONTAL);
 
         try {
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource(getClass().getSimpleName() + ".fxml")));

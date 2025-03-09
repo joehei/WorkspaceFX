@@ -41,6 +41,12 @@ public class WorkspaceFXUtils {
         return icon;
     }
 
+    public static FontIcon getIcon(Ikon code, int iconSize) {
+        FontIcon icon = new FontIcon(code);
+        Styles.appendStyle(icon, "-fx-icon-size", String.valueOf(iconSize));
+        return icon;
+    }
+
     public static FontIcon getIcon(Ikon code) {
         FontIcon icon = new FontIcon(code);
         Styles.appendStyle(icon, "-fx-icon-size", String.valueOf(getDefaultIconSize()));
@@ -94,6 +100,12 @@ public class WorkspaceFXUtils {
         return writableImage;
     }
 
+    /**
+     * Converts a throwable into a stacktrace string
+     *
+     * @param throwable The throwable.
+     * @return A stacktrace as string.
+     */
     public static String exceptionToString(Throwable throwable) {
         if (throwable == null) {
             return "";

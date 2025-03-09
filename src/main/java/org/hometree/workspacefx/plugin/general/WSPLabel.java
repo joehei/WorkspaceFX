@@ -9,9 +9,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 public class WSPLabel extends AWorkspaceFXPlugin {
     public WSPLabel(Ikon ikon, String text) {
         setContent(new StackPane(new Label(text)));
-        FontIcon icon = new FontIcon(ikon);
-        icon.setIconSize(16);
-        setToggleButtonContent(icon);
+        setToggleButtonContent(ikon);
         setShortDescription("My short description of the plugin");
     }
 }
