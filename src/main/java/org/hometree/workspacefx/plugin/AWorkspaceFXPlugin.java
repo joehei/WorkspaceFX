@@ -1,13 +1,17 @@
 package org.hometree.workspacefx.plugin;
 
 import javafx.beans.property.*;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import org.hometree.workspacefx.sidebar.Sidebar;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AWorkspaceFXPlugin {
 
+    private static final Logger logger = LoggerFactory.getLogger(AWorkspaceFXPlugin.class);
     private final BooleanProperty pluginSelected = new SimpleBooleanProperty();
     private final IntegerProperty defaultIconSize = new SimpleIntegerProperty(16);
     private final ObjectProperty<Node> toggleButtonContent = new SimpleObjectProperty<>();
@@ -17,10 +21,37 @@ public abstract class AWorkspaceFXPlugin {
     private Node content;
     private NotificationGraphic notificationGraphic;
 
+    /**
+     * General constructor
+     */
     public AWorkspaceFXPlugin() {
         setup();
     }
 
+    /**
+     * Constructor which can be used together with a fxml file which describes the content to be shown
+     * when the toggle button is selected. The fxml file must have the same name as the extending class.
+     *
+     * @param shortDescription Plugin short description
+     * @param icon Ikonli icon code
+     */
+    public AWorkspaceFXPlugin(String shortDescription, Ikon icon) {
+        try {
+            setup();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(getClass().getSimpleName() + ".fxml"));
+            loader.setController(this);
+            setContent(loader.load());
+            setShortDescription(shortDescription);
+            setToggleButtonContent(icon);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * @param toggleButtonContent Toggle button content
+     * @param content The content which should be shown when the button is selected
+     */
     public AWorkspaceFXPlugin(Node toggleButtonContent, Node content) {
         setup();
         setToggleButtonContent(toggleButtonContent);
