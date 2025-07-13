@@ -1,6 +1,6 @@
 package org.hometree.workspacefx;
 
-import atlantafx.base.theme.*;
+import atlantafx.base.theme.CupertinoLight;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -10,6 +10,7 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.hometree.workspacefx.plugin.clock.WSPAnalogClock;
 import org.hometree.workspacefx.plugin.clock.WSPCalendar;
 import org.hometree.workspacefx.plugin.clock.WSPDigitalClock;
+import org.hometree.workspacefx.plugin.directory.DirectoryListerPath;
 import org.hometree.workspacefx.plugin.fxproperty.WSPFXProperty;
 import org.hometree.workspacefx.plugin.general.WSPButton;
 import org.hometree.workspacefx.plugin.general.WSPLabel;
@@ -94,6 +95,7 @@ public class WorkspaceFXDemo extends Application {
         ws.addPlugin(new WSPDigitalClock(), WorkspaceFX.WORKSPACE_POSITION.LEFT_TOP, true);
         ws.addPlugin(new WSPAnalogClock(), WorkspaceFX.WORKSPACE_POSITION.LEFT_TOP, true);
         ws.addPlugin(new WSPLabel(MaterialDesignF.FILE_TREE, "left top 2"), WorkspaceFX.WORKSPACE_POSITION.LEFT_TOP);
+        ws.addPlugin(new DirectoryListerPath(), WorkspaceFX.WORKSPACE_POSITION.LEFT_TOP);
     }
 
     @Override

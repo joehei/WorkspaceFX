@@ -62,16 +62,16 @@ public class Sidebar extends VBox {
             // Replace the current content
             if (nv != null && ov != null) {
                 backupDivider();
-                contentSplitPane.getItems().set(contentSplitPane.getItems().indexOf(buttonContentMap.get((ToggleButton) ov).getContent()), buttonContentMap.get((ToggleButton) nv).getContent());
+                contentSplitPane.getItems().set(contentSplitPane.getItems().indexOf(buttonContentMap.get((ToggleButton) ov).getContentPane()), buttonContentMap.get((ToggleButton) nv).getContentPane());
                 restoreDivider();
             }
 
             // Nothing was selected add the selected content
             if (nv != null && ov == null) {
                 if (contentSplitPanePosition.equals(SPLITPANE_POSITION.FIRST)) {
-                    contentSplitPane.getItems().addFirst(buttonContentMap.get((ToggleButton) nv).getContent());
+                    contentSplitPane.getItems().addFirst(buttonContentMap.get((ToggleButton) nv).getContentPane());
                 } else {
-                    contentSplitPane.getItems().add(buttonContentMap.get((ToggleButton) nv).getContent());
+                    contentSplitPane.getItems().add(buttonContentMap.get((ToggleButton) nv).getContentPane());
                 }
                 restoreDivider();
             }
@@ -79,8 +79,9 @@ public class Sidebar extends VBox {
             // Nothing is selected remove all the content
             if (nv == null && ov != null) {
                 backupDivider();
-                contentSplitPane.getItems().remove(buttonContentMap.get((ToggleButton) ov).getContent());
+                contentSplitPane.getItems().remove(buttonContentMap.get((ToggleButton) ov).getContentPane());
             }
+
         });
         setupDragAndDrop();
     }
@@ -346,7 +347,7 @@ public class Sidebar extends VBox {
                 AWorkspaceFXPlugin plugin = getWorkspaceFX().getDragAndDropPlugin();
 
                 Stage newStage = new Stage();
-                Scene scene = new Scene(new StackPane(plugin.getContent()));
+                Scene scene = new Scene(new StackPane(plugin.getContentPane()));
                 newStage.setScene(scene);
                 newStage.getIcons().add(WorkspaceFXUtils.copyImage(workspaceFX.getDragAndDropIcon()));
                 newStage.setX(event.getScreenX());

@@ -3,7 +3,9 @@ package org.hometree.workspacefx.plugin;
 import javafx.beans.property.*;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.layout.StackPane;
 import org.hometree.workspacefx.sidebar.Sidebar;
+import org.hometree.workspacefx.utils.veil.Veil;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.slf4j.Logger;
@@ -11,15 +13,17 @@ import org.slf4j.LoggerFactory;
 
 public abstract class AWorkspaceFXPlugin {
 
-    private static final Logger logger = LoggerFactory.getLogger(AWorkspaceFXPlugin.class);
+    protected final Logger logger = LoggerFactory.getLogger(AWorkspaceFXPlugin.class);
     private final BooleanProperty pluginSelected = new SimpleBooleanProperty();
     private final IntegerProperty defaultIconSize = new SimpleIntegerProperty(16);
     private final ObjectProperty<Node> toggleButtonContent = new SimpleObjectProperty<>();
     private final StringProperty shortDescription = new SimpleStringProperty();
     private final ObjectProperty<Sidebar> sidebar = new SimpleObjectProperty<>();
     private final StringProperty status = new SimpleStringProperty();
+    private Veil veil;
     private Node content;
     private NotificationGraphic notificationGraphic;
+    private StackPane contentPane;
 
     /**
      * General constructor
@@ -33,7 +37,27 @@ public abstract class AWorkspaceFXPlugin {
      * when the toggle button is selected. The fxml file must have the same name as the extending class.
      *
      * @param shortDescription Plugin short description
-     * @param icon Ikonli icon code
+     * @param icon             Ikonli icon code
+     */
+    public AWorkspaceFXPlugin(String shortDescription, Ikon icon, String fxmlFile) {
+        try {
+            setup();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
+            loader.setController(this);
+            setContent(loader.load());
+            setShortDescription(shortDescription);
+            setToggleButtonContent(icon);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Constructor which can be used together with a fxml file which describes the content to be shown
+     * when the toggle button is selected. The fxml file must have the same name as the extending class.
+     *
+     * @param shortDescription Plugin short description
+     * @param icon             Ikonli icon code
      */
     public AWorkspaceFXPlugin(String shortDescription, Ikon icon) {
         try {
@@ -50,7 +74,7 @@ public abstract class AWorkspaceFXPlugin {
 
     /**
      * @param toggleButtonContent Toggle button content
-     * @param content The content which should be shown when the button is selected
+     * @param content             The content which should be shown when the button is selected
      */
     public AWorkspaceFXPlugin(Node toggleButtonContent, Node content) {
         setup();
@@ -96,6 +120,7 @@ public abstract class AWorkspaceFXPlugin {
     }
 
     private void setup() {
+        veil = new Veil();
         toggleButtonContentProperty().addListener((obs, ov, nv) -> notificationGraphic = new NotificationGraphic(getToggleButtonContent()));
     }
 
@@ -150,7 +175,23 @@ public abstract class AWorkspaceFXPlugin {
     }
 
     public void setContent(Node content) {
+        if (contentPane != null) {
+            contentPane.getChildren().clear();
+
+        } else {
+            contentPane = new StackPane();
+        }
+        contentPane.getChildren().addAll(content, veil);
+        veil.setVisible(false);
         this.content = content;
+    }
+
+    public Veil getVeil() {
+        return veil;
+    }
+
+    public StackPane getContentPane() {
+        return contentPane;
     }
 
 }

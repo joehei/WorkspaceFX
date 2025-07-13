@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import atlantafx.base.controls.RingProgressIndicator?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<fx:root fx:id="veil" prefHeight="150.0" prefWidth="200.0" type="StackPane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: rgb(0,0,0,.4);" />
+      <VBox alignment="CENTER" spacing="10.0">
+         <children>
+            <RingProgressIndicator fx:id="indicator" maxHeight="50.0" maxWidth="50.0" minHeight="50.0" minWidth="50.0" />
+            <Label fx:id="label" />
+         </children>
+      </VBox>
+   </children>
+</fx:root>
