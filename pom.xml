@@ -106,7 +106,7 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>org.hometree.workspacefx/org.hometree.workspacefx.WorkspaceFXDemo</mainClass>
+                            <mainClass>org.hometree.workspacefx/org.carpinus.betulus.workspacefx.WorkspaceFXDemo</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>

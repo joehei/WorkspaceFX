@@ -1,0 +1,34 @@
+package org.carpinus.betulus.workspacefx.plugin.clock;
+
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.util.Duration;
+
+import java.util.Calendar;
+
+/**
+ * Clockwork keeps track of time of day, once a second. It has properties to bind to.
+ */
+public class AnalogClockClockwork {
+
+    public SimpleIntegerProperty hour = new SimpleIntegerProperty(0);
+    public SimpleIntegerProperty minute = new SimpleIntegerProperty(0);
+    public SimpleIntegerProperty second = new SimpleIntegerProperty(0);
+
+    public AnalogClockClockwork() {
+        startTicking();
+    }
+
+    private void startTicking() {
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+            Calendar calendar = Calendar.getInstance();
+            hour.set(calendar.get(Calendar.HOUR));
+            minute.set(calendar.get(Calendar.MINUTE));
+            second.set(calendar.get(Calendar.SECOND));
+        }));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+    }
+
+}

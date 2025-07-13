@@ -1,22 +1,22 @@
 module org.hometree.workspacefx {
-    exports org.hometree.workspacefx.plugin.clock;
-    exports org.hometree.workspacefx.plugin.fxproperty;
-    exports org.hometree.workspacefx.plugin.general;
-    exports org.hometree.workspacefx.plugin.logging;
-    exports org.hometree.workspacefx.plugin;
-    exports org.hometree.workspacefx.sidebar;
-    exports org.hometree.workspacefx;
-    exports org.hometree.workspacefx.utils.veil;
+    exports org.carpinus.betulus.workspacefx.plugin.clock;
+    exports org.carpinus.betulus.workspacefx.plugin.fxproperty;
+    exports org.carpinus.betulus.workspacefx.plugin.general;
+    exports org.carpinus.betulus.workspacefx.plugin.logging;
+    exports org.carpinus.betulus.workspacefx.plugin;
+    exports org.carpinus.betulus.workspacefx.sidebar;
+    exports org.carpinus.betulus.workspacefx;
+    exports org.carpinus.betulus.workspacefx.utils.veil;
 
-    opens org.hometree.workspacefx to javafx.fxml;
-    opens org.hometree.workspacefx.plugin to javafx.fxml;
-    opens org.hometree.workspacefx.plugin.clock to javafx.fxml;
-    opens org.hometree.workspacefx.plugin.directory to javafx.fxml;
-    opens org.hometree.workspacefx.plugin.fxproperty to javafx.fxml;
-    opens org.hometree.workspacefx.plugin.general to javafx.fxml;
-    opens org.hometree.workspacefx.plugin.logging to javafx.fxml, javafx.base;
-    opens org.hometree.workspacefx.plugin.notification to javafx.fxml;
-    opens org.hometree.workspacefx.utils.veil to javafx.fxml;
+    opens org.carpinus.betulus.workspacefx to javafx.fxml;
+    opens org.carpinus.betulus.workspacefx.plugin to javafx.fxml;
+    opens org.carpinus.betulus.workspacefx.plugin.clock to javafx.fxml;
+    opens org.carpinus.betulus.workspacefx.plugin.directory to javafx.fxml;
+    opens org.carpinus.betulus.workspacefx.plugin.fxproperty to javafx.fxml;
+    opens org.carpinus.betulus.workspacefx.plugin.general to javafx.fxml;
+    opens org.carpinus.betulus.workspacefx.plugin.logging to javafx.fxml, javafx.base;
+    opens org.carpinus.betulus.workspacefx.plugin.notification to javafx.fxml;
+    opens org.carpinus.betulus.workspacefx.utils.veil to javafx.fxml;
 
     requires atlantafx.base;
     requires java.desktop;
