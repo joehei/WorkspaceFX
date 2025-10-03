@@ -73,3 +73,33 @@ public static void main(String[] args) {
   launch();
 }
 ```
+
+Next Step is to setup the window.
+* Apply your Style
+* Create a new workspace
+* Setup your plugins
+* Show the window
+```java
+@Override
+public void start(Stage stage) {
+
+        Application.setUserAgentStylesheet(new CupertinoLight().getUserAgentStylesheet());
+        WorkspaceFX ws = new WorkspaceFX();
+
+        leftTop(ws);
+        leftBottom(ws);
+        bottomLeft(ws);
+        rightTop(ws);
+        rightBottom(ws);
+        bottomRight(ws);
+        mainContent(ws);
+
+        Scene scene = new Scene(ws, 1400, 1000);
+        stage.setScene(scene);
+        stage.setTitle("WorkspaceFX demo");
+        stage.setOnCloseRequest(event -> System.exit(0));
+        stage.show();
+    }
+```
+
+Check out the full demo app [here.](https://github.com/joehei/WorkspaceFX/blob/main/src/main/java/org/carpinus/betulus/workspacefx/WorkspaceFXDemo.java)
