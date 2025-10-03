@@ -78,6 +78,7 @@ Next Step is to setup the window.
 * Apply your Style
 * Create a new workspace
 * Setup your plugins
+* Setup your main content (you can use e.g. [TiwulFX Dock](https://github.com/panemu/tiwulfx-dock))
 * Show the window
 ```java
 @Override
@@ -99,7 +100,53 @@ public void start(Stage stage) {
         stage.setTitle("WorkspaceFX demo");
         stage.setOnCloseRequest(event -> System.exit(0));
         stage.show();
-    }
+        
+}
 ```
 
 Check out the full demo app [here.](https://github.com/joehei/WorkspaceFX/blob/main/src/main/java/org/carpinus/betulus/workspacefx/WorkspaceFXDemo.java)
+
+## Create your own plugin
+
+* Create a class and extend it from [AWorkspaceFXPlugin](https://github.com/joehei/WorkspaceFX/blob/main/src/main/java/org/carpinus/betulus/workspacefx/plugin/AWorkspaceFXPlugin.java)
+* Set the content
+* Set the icon
+* Set the short description
+* Add it to your application
+
+```java
+public class WSPButton extends AWorkspaceFXPlugin {
+
+    private final Button button;
+
+    /**
+     * @param text Button text
+     * @param ikon Plugin icon literal for the toggle button
+     * @param shortDesc Short description for the plugin
+     */
+    public WSPButton(String text, Ikon ikon, String shortDesc) {
+        button = new Button(text);
+        setContent(new StackPane(button));
+        setToggleButtonContent(ikon);
+        setShortDescription(shortDesc);
+    }
+
+    public Button getButton() {
+        return button;
+    }
+
+}
+```
+
+```java
+WSPButton logInfo = new WSPButton("Logger test", MaterialDesignC.CHAT_OUTLINE, "Log info text button.");
+logInfo.getButton().setOnAction(event -> {
+    log.info("info");
+    log.warn("warning");
+    log.error("error", new Exception("test"));
+    log.debug("debug");
+});
+ws.addPlugin(logInfo, WorkspaceFX.WORKSPACE_POSITION.LEFT_BOTTOM, false);
+```
+
+If you want to load an fxml file see [here.](https://github.com/joehei/WorkspaceFX/blob/main/src/main/java/org/carpinus/betulus/workspacefx/plugin/clock/WSPDigitalClock.java)
